@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Michael Corrado — Portfolio</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+/* ═══════════════════════════════
+   SHARED
+═══════════════════════════════ */
+.page { position:fixed; inset:0; display:flex; flex-direction:column; transition:opacity 0.5s; }
+.page.hidden { opacity:0; pointer-events:none; }
+.page.gone { display:none !important; }
+
+/* ═══════════════════════════════
+   DARK — TERMINAL SPA
+═══════════════════════════════ */
+#dark {
+  background:#0a0a08;
+  color:#b8ff6e;
+  font-family:'Courier New',Courier,monospace;
+}
+
+.d-chrome {
+  display:flex; align-items:center; gap:10px;
+  padding:5px 14px; background:#0d0d0a;
+  border-bottom:1px solid #1e2e10; flex-shrink:0; z-index:10;
+}
+.d-dots { display:flex; gap:5px; }
+.d-dot { width:11px; height:11px; border-radius:50%; }
+.dr{background:#ff5f57;} .dy{background:#febc2e;} .dg{background:#28c840;}
+.d-title { font-size:0.65rem; color:#3a5a20; letter-spacing:0.12em; margin:0 auto; }
+
+.d-tabs {
+  display:flex; flex-shrink:0;
+  background:#0d0d0a; border-bottom:1px solid #1a2a0e; z-index:10;
+}
+.d-tab {
+  padding:7px 20px; font-size:0.65rem; letter-spacing:0.14em;
+  color:#3a5a20; cursor:pointer; border-right:1px solid #1a2a0e; transition:all 0.15s;
+}
+.d-tab:hover { color:#b8ff6e; background:#111a08; }
+.d-tab.active { color:#b8ff6e; background:#111a08; border-bottom:2px solid #b8ff6e; }
+.d-tab-end { margin-left:auto; border-right:none; }
+
+.d-scroll { flex:1; overflow-y:auto; scroll-behavior:smooth; }
+.d-scroll::-webkit-scrollbar { width:4px; }
+.d-scroll::-webkit-scrollbar-thumb { background:#2a4a18; }
+
+/* ── HERO ── */
+.d-hero {
+  display:grid; grid-template-columns:1fr 1fr;
+  min-height:calc(100vh - 75px);
+  border-bottom:1px solid #1a2a0e;
+}
+
+.d-hero-left {
+  padding:2.5rem 2rem 2.5rem 2.5rem;
+  display:flex; flex-direction:column; justify-content:center; gap:1.8rem;
+  border-right:1px solid #1a2a0e;
+}
+
+.d-ascii-name {
+  font-size:0.65rem; line-height:1.2;
+  color:#b8ff6e; white-space:pre;
+  text-shadow:0 0 12px #6aff0035;
+  letter-spacing:0.04em;
+}
+
+.d-ident { display:flex; flex-direction:column; gap:5px; }
+.d-ident-row { font-size:0.7rem; display:flex; gap:1rem; }
+.d-ident-k { color:#3a5a20; min-width:90px; letter-spacing:0.05em; }
+.d-ident-v { color:#deffaa; }
+.d-ident-v.live { color:#b8ff6e; }
+
+.d-cmd-block { display:flex; flex-direction:column; gap:5px; }
+.d-cmd { font-size:0.7rem; }
+.d-prompt { color:#4a8a28; }
+.d-cmdtext { color:#fff; }
+.d-out { color:#8ac860; font-size:0.68rem; }
+.d-cursor {
+  display:inline-block; width:8px; height:12px;
+  background:#b8ff6e; vertical-align:middle;
+  animation:blink 1.1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+
+/* Portrait — raw ASCII text, phosphor green */
+.d-hero-right {
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; padding:1rem;
+  background:#060806;
+  position:relative;
+}
+.d-hero-right::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,10,0,0.15) 3px,rgba(0,10,0,0.15) 4px);
+}
+.d-portrait-pre {
+  font-family:'Courier New',monospace;
+  font-size:0.3rem; line-height:1.15;
+  color:#7ab848;
+  white-space:pre;
+  letter-spacing:0.03em;
+  text-shadow:0 0 4px #4a8a2840;
+  user-select:none;
+  position:relative; z-index:1;
+}
+
+/* ── SECTIONS ── */
+.d-section {
+  padding:2.5rem; border-bottom:1px solid #1a2a0e;
+  opacity:0; transform:translateY(18px);
+  transition:opacity 0.5s,transform 0.5s;
+}
+.d-section.visible { opacity:1; transform:none; }
+.d-section-head {
+  font-size:0.62rem; letter-spacing:0.22em; color:#3a5a20;
+  border-bottom:1px solid #1a2a0e; padding-bottom:6px; margin-bottom:1.4rem;
+}
+.d-about-text { font-size:0.78rem; line-height:1.85; color:#8ac860; max-width:640px; }
+
+.d-skill-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:6px;
+}
+.d-skill {
+  border:1px solid #1e3010; padding:7px 12px;
+  font-size:0.65rem; color:#7ab848; letter-spacing:0.08em; transition:all 0.15s;
+}
+.d-skill:hover { border-color:#4a8a28; color:#b8ff6e; background:#0f150a; }
+
+.d-proj-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:10px;
+}
+.d-proj {
+  border:1px solid #1e3010; padding:1.1rem; cursor:pointer; transition:all 0.2s;
+}
+.d-proj:hover { border-color:#4a8a28; background:#0f150a; }
+.d-proj-num  { font-size:0.58rem; color:#3a5a20; margin-bottom:4px; }
+.d-proj-name { font-size:0.78rem; color:#c8ff80; margin-bottom:4px; }
+.d-proj-stack{ font-size:0.6rem; color:#3a6020; margin-bottom:6px; }
+.d-proj-desc { font-size:0.65rem; color:#7a9a50; line-height:1.65; }
+.d-proj-link { font-size:0.6rem; color:#4a8a28; margin-top:8px; }
+.d-proj:hover .d-proj-link { color:#b8ff6e; }
+
+.d-contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:500px; }
+.d-contact-item { border:1px solid #1e3010; padding:10px 14px; }
+.d-contact-label{ font-size:0.58rem; color:#3a5a20; letter-spacing:0.12em; }
+.d-contact-val  { font-size:0.72rem; color:#b8ff6e; margin-top:3px; }
+
+.d-status {
+  display:flex; align-items:center; gap:1.5rem;
+  padding:5px 14px; background:#0d0d0a; border-top:1px solid #1a2a0e;
+  font-size:0.6rem; color:#2a4a18; flex-shrink:0; z-index:10;
+}
+.d-pulse {
+  width:6px; height:6px; border-radius:50%; background:#b8ff6e;
+  box-shadow:0 0 6px #b8ff6e; animation:pulse 2s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.2} }
+.d-build-btn {
+  margin-left:auto; background:transparent;
+  border:1px solid #2a4a18; color:#4a7a28;
+  font-family:'Courier New',monospace; font-size:0.6rem;
+  padding:3px 14px; cursor:pointer; letter-spacing:0.1em; transition:all 0.2s;
+}
+.d-build-btn:hover { border-color:#b8ff6e; color:#b8ff6e; }
+
+/* global scanlines */
+#dark::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:100;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px);
+}
+
+/* ═══════════════════════════════
+   BUILD SCREEN
+═══════════════════════════════ */
+#build {
+  background:#0a0a08; color:#b8ff6e;
+  font-family:'Courier New',monospace;
+  padding:2.5rem; flex-direction:column;
+}
+.b-bar { height:3px; background:#1a2a0e; border-radius:2px; overflow:hidden; margin-bottom:2rem; flex-shrink:0; }
+.b-fill { height:100%; width:0%; background:linear-gradient(90deg,#b8ff6e,#deffaa); transition:width 0.3s ease; }
+.b-line { font-size:0.8rem; line-height:1.65; opacity:0; transform:translateY(3px); transition:opacity 0.2s,transform 0.2s; }
+.b-line.show { opacity:1; transform:none; }
+.b-ok  { color:#b8ff6e; }
+.b-info{ color:#7ab8e8; }
+.b-warn{ color:#febc2e; }
+.b-done{ color:#fff; font-weight:bold; }
+
+/* ═══════════════════════════════
+   LIGHT — EARTH TONE BOTANICAL
+═══════════════════════════════ */
+#light {
+  background:#f5f0e8;  /* warm cream */
+  font-family:system-ui,-apple-system,sans-serif;
+  color:#2c2a1a;
+}
+
+.l-nav {
+  display:flex; align-items:center;
+  padding:0.85rem 2.5rem;
+  border-bottom:2px solid #3a4a1e;
+  background:#f5f0e8; flex-shrink:0; z-index:10; gap:2rem;
+}
+.l-logo { font-size:1rem; font-weight:900; color:#3a4a1e; font-family:Georgia,serif; letter-spacing:-0.02em; }
+.l-nav-links { display:flex; gap:1.8rem; margin-left:auto; align-items:center; }
+.l-nav-links a {
+  font-size:0.7rem; color:#6a7a3a; text-decoration:none;
+  font-weight:700; letter-spacing:0.1em; text-transform:uppercase; transition:color 0.15s;
+}
+.l-nav-links a:hover { color:#3a4a1e; }
+.l-term-btn {
+  background:#3a4a1e; border:none; color:#f5f0e8;
+  font-size:0.62rem; padding:6px 14px; cursor:pointer;
+  letter-spacing:0.1em; text-transform:uppercase; font-weight:700;
+  font-family:inherit; transition:background 0.2s;
+}
+.l-term-btn:hover { background:#2a3a10; }
+
+.l-scroll { flex:1; overflow-y:auto; scroll-behavior:smooth; }
+.l-scroll::-webkit-scrollbar { width:4px; }
+.l-scroll::-webkit-scrollbar-thumb { background:#6a8a3a; }
+
+/* HERO */
+.l-hero {
+  display:grid; grid-template-columns:1fr 1fr;
+  min-height:calc(100vh - 54px);
+  border-bottom:2px solid #3a4a1e;
+}
+
+.l-hero-text {
+  padding:3rem 2.5rem;
+  display:flex; flex-direction:column; justify-content:center; gap:1.6rem;
+  border-right:2px solid #3a4a1e; position:relative; overflow:hidden;
+}
+
+/* Decorative ASCII plant in hero background */
+.l-deco-plant {
+  position:absolute; bottom:-10px; right:20px;
+  font-family:'Courier New',monospace; font-size:0.55rem; line-height:1.2;
+  color:rgba(90,110,40,0.12); white-space:pre; pointer-events:none;
+  user-select:none; letter-spacing:0.02em;
+}
+
+.l-eyebrow {
+  font-size:0.62rem; letter-spacing:0.25em; text-transform:uppercase;
+  color:#7a8a4a; font-weight:700;
+}
+.l-name {
+  font-size:clamp(2.4rem,4vw,3.8rem); font-weight:900;
+  font-family:Georgia,serif; line-height:0.9;
+  letter-spacing:-0.03em; text-transform:uppercase; color:#3a4a1e;
+}
+.l-name-accent { color:#16a34a; }
+.l-bio {
+  font-size:0.88rem; color:#5a5840; line-height:1.8; max-width:380px;
+}
+.l-chips { display:flex; flex-wrap:wrap; gap:7px; }
+.l-chip {
+  padding:5px 14px; border:2px solid #3a4a1e;
+  font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  color:#3a4a1e; transition:all 0.15s; cursor:default;
+}
+.l-chip.fill { background:#3a4a1e; color:#f5f0e8; }
+.l-chip:hover { background:#3a4a1e; color:#f5f0e8; }
+
+/* Photo panel — vibrant green */
+.l-photo-panel {
+  background:#16a34a;
+  position:relative; display:flex;
+  align-items:flex-end; justify-content:flex-start;
+  overflow:hidden; padding:1.5rem;
+}
+/* halftone dots */
+.l-photo-dots {
+  position:absolute; inset:0;
+  background-image:radial-gradient(circle,rgba(0,0,0,0.2) 1.5px,transparent 1.5px);
+  background-size:9px 9px; z-index:2; pointer-events:none;
+}
+/* real photo will go here - for mock we use a placeholder */
+.l-photo-placeholder {
+  position:absolute; inset:0; z-index:1;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:8px;
+}
+.l-photo-letter {
+  font-size:22vw; font-family:Georgia,serif; font-style:italic; font-weight:900;
+  color:rgba(255,255,255,0.08); line-height:1; user-select:none;
+}
+.l-photo-hint {
+  position:absolute; z-index:3; color:rgba(255,255,255,0.45);
+  font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase;
+  font-weight:600; text-align:center; line-height:2;
+}
+.l-photo-tag {
+  position:relative; z-index:3;
+  background:#f5f0e8; color:#3a4a1e;
+  font-size:0.62rem; font-weight:700; letter-spacing:0.12em;
+  text-transform:uppercase; padding:5px 12px;
+}
+
+/* SECTIONS */
+.l-section {
+  padding:3rem 2.5rem; border-bottom:1px solid #ddd8c8;
+  opacity:0; transform:translateY(18px);
+  transition:opacity 0.5s,transform 0.5s;
+  position:relative; overflow:hidden;
+}
+.l-section.visible { opacity:1; transform:none; }
+
+/* Decorative plant in sections */
+.l-section-deco {
+  position:absolute; right:2rem; top:50%; transform:translateY(-50%);
+  font-family:'Courier New',monospace; font-size:0.5rem; line-height:1.15;
+  color:rgba(90,110,40,0.1); white-space:pre; pointer-events:none; user-select:none;
+}
+
+.l-section-head {
+  font-size:0.62rem; letter-spacing:0.22em; text-transform:uppercase;
+  color:#7a8a4a; font-weight:700; margin-bottom:1.5rem;
+  display:flex; align-items:center; gap:1rem;
+}
+.l-section-head::after {
+  content:''; flex:1; height:1px; background:#d8d0b8; max-width:200px;
+}
+
+.l-about-text { font-size:0.95rem; color:#4a4830; line-height:1.85; max-width:640px; }
+
+.l-proj-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px;
+}
+.l-proj {
+  padding:1.5rem; cursor:pointer; transition:all 0.2s; background:#ede8dc;
+  border:1px solid #d0c8b0; border-bottom:3px solid #6a7a3a;
+}
+.l-proj:hover { background:#e0d8c8; border-bottom-color:#3a4a1e; transform:translateY(-2px); box-shadow:0 4px 16px rgba(58,74,30,0.1); }
+.l-proj-num  { font-size:0.58rem; color:#8a9a5a; font-weight:700; letter-spacing:0.12em; margin-bottom:4px; }
+.l-proj-name { font-size:0.9rem; font-weight:800; color:#3a4a1e; margin-bottom:4px; font-family:Georgia,serif; }
+.l-proj-stack{ font-size:0.65rem; color:#7a8a4a; margin-bottom:8px; }
+.l-proj-desc { font-size:0.78rem; color:#5a5840; line-height:1.65; }
+.l-proj-arrow{ font-size:0.7rem; color:#16a34a; margin-top:10px; font-weight:700; }
+
+.l-skill-grid { display:flex; flex-wrap:wrap; gap:8px; }
+.l-skill {
+  padding:7px 16px; background:#ede8dc; border:1px solid #c8c0a0;
+  font-size:0.7rem; font-weight:600; color:#3a4a1e; letter-spacing:0.06em; transition:all 0.15s;
+}
+.l-skill:hover { background:#3a4a1e; color:#f5f0e8; border-color:#3a4a1e; }
+
+.l-contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:520px; }
+.l-contact-item {
+  border:1px solid #c8c0a0; border-left:3px solid #6a7a3a;
+  padding:1rem 1.2rem; transition:all 0.2s; cursor:pointer; background:#ede8dc;
+}
+.l-contact-item:hover { border-left-color:#3a4a1e; background:#e0d8c8; }
+.l-c-label { font-size:0.58rem; color:#8a9a5a; letter-spacing:0.15em; text-transform:uppercase; font-weight:700; }
+.l-c-val   { font-size:0.8rem; font-weight:700; color:#3a4a1e; margin-top:4px; }
+
+/* ASCII plant divider between sections */
+.l-plant-divider {
+  text-align:center; padding:1rem 0; border-bottom:1px solid #ddd8c8;
+  font-family:'Courier New',monospace; font-size:0.55rem; line-height:1.2;
+  color:#9aaa6a; white-space:pre; letter-spacing:0.04em; user-select:none;
+}
+
+.l-footer {
+  padding:1.5rem 2.5rem; border-top:2px solid #3a4a1e;
+  display:flex; justify-content:space-between; align-items:center;
+  background:#3a4a1e; color:#8a9a6a; font-size:0.65rem; letter-spacing:0.08em; flex-shrink:0;
+}
+.l-footer-logo { font-family:Georgia,serif; color:#f5f0e8; font-weight:900; font-size:0.9rem; }
+</style>
+</head>
+<body>
+
+<!-- ════════ TERMINAL MODE ════════ -->
+<div class="page" id="dark">
+  <div class="d-chrome">
+    <div class="d-dots">
+      <div class="d-dot dr"></div><div class="d-dot dy"></div><div class="d-dot dg"></div>
+    </div>
+    <div class="d-title">CORRADO.DEV  ·  PORTFOLIO OS v1.0  ·  2025</div>
+  </div>
+
+  <div class="d-tabs">
+    <div class="d-tab active"  onclick="dScrollTo('hero')">SUMMARY</div>
+    <div class="d-tab" onclick="dScrollTo('d-about')">ABOUT</div>
+    <div class="d-tab" onclick="dScrollTo('d-projects')">PROJECTS</div>
+    <div class="d-tab" onclick="dScrollTo('d-skills')">SKILLS</div>
+    <div class="d-tab" onclick="dScrollTo('d-contact')">CONTACT</div>
+    <div class="d-tab d-tab-end">MORE+</div>
+  </div>
+
+  <div class="d-scroll" id="dscroll">
+
+    <!-- HERO -->
+    <div class="d-hero" id="hero">
+      <div class="d-hero-left">
+
+        <pre class="d-ascii-name" id="asciiName"></pre>
+
+        <div class="d-ident">
+          <div class="d-ident-row"><span class="d-ident-k">ROLE</span><span class="d-ident-v">Full-Stack Software Engineer</span></div>
+          <div class="d-ident-row"><span class="d-ident-k">GRAD</span><span class="d-ident-v">BrainStation '25</span></div>
+          <div class="d-ident-row"><span class="d-ident-k">LOCATION</span><span class="d-ident-v">Toronto, ON</span></div>
+          <div class="d-ident-row"><span class="d-ident-k">STATUS</span><span class="d-ident-v live">▶ OPEN TO WORK</span></div>
+          <div class="d-ident-row"><span class="d-ident-k">GITHUB</span><span class="d-ident-v">github.com/mikeyc</span></div>
+        </div>
+
+        <div class="d-cmd-block">
+          <div class="d-cmd"><span class="d-prompt">mikey@portfolio:~$</span><span class="d-cmdtext"> cat about.txt</span></div>
+          <div class="d-out">Full-stack engineer. Builds things people actually use.</div>
+          <div class="d-out">React on the front. Node on the back. Always learning.</div>
+          <div class="d-cmd" style="margin-top:6px">
+            <span class="d-prompt">mikey@portfolio:~$</span> <span class="d-cursor"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portrait: raw ASCII text, phosphor green -->
+      <div class="d-hero-right">
+        <pre class="d-portrait-pre" id="portrait"></pre>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="d-section" id="d-about">
+      <div class="d-section-head">// 01 — ABOUT</div>
+      <div class="d-about-text">
+        I'm a full-stack software engineer and BrainStation graduate with a passion for building
+        products people genuinely enjoy using. I think in systems, communicate in code, and spend
+        too much time making sure the details are right. Currently open to new opportunities in
+        Toronto or remote — looking to join a team where I can ship real things and keep growing fast.
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="d-section" id="d-projects">
+      <div class="d-section-head">// 02 — PROJECTS</div>
+      <div class="d-proj-grid">
+        <div class="d-proj">
+          <div class="d-proj-num">PROJECT_01</div>
+          <div class="d-proj-name">▸ INSTOCK</div>
+          <div class="d-proj-stack">React · Node.js · Express · MySQL</div>
+          <div class="d-proj-desc">Inventory management system built in a team sprint. Full CRUD, RESTful API design, relational database architecture.</div>
+          <div class="d-proj-link">→ View project</div>
+        </div>
+        <div class="d-proj">
+          <div class="d-proj-num">PROJECT_02</div>
+          <div class="d-proj-name">▸ DREAM TEAM GENERATOR</div>
+          <div class="d-proj-stack">React · Node.js · External API</div>
+          <div class="d-proj-desc">Build and compare fantasy sports teams using live data. Deep API integration with custom UI and state management.</div>
+          <div class="d-proj-link">→ View project</div>
+        </div>
+        <div class="d-proj">
+          <div class="d-proj-num">PROJECT_03</div>
+          <div class="d-proj-name">▸ EVENTURE</div>
+          <div class="d-proj-stack">Node.js · Express · MySQL</div>
+          <div class="d-proj-desc">Event management backend. Auth, relational data modelling, clean REST endpoints.</div>
+          <div class="d-proj-link">→ View project</div>
+        </div>
+        <div class="d-proj">
+          <div class="d-proj-num">PROJECT_04</div>
+          <div class="d-proj-name">▸ MORE ON GITHUB</div>
+          <div class="d-proj-stack">Various</div>
+          <div class="d-proj-desc">Additional projects, experiments, and contributions live on GitHub. Always something in progress.</div>
+          <div class="d-proj-link">→ github.com/mikeyc</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="d-section" id="d-skills">
+      <div class="d-section-head">// 03 — SKILLS</div>
+      <div class="d-skill-grid">
+        <div class="d-skill">React</div>
+        <div class="d-skill">Node.js</div>
+        <div class="d-skill">Express.js</div>
+        <div class="d-skill">JavaScript (ES6+)</div>
+        <div class="d-skill">TypeScript</div>
+        <div class="d-skill">MySQL</div>
+        <div class="d-skill">REST APIs</div>
+        <div class="d-skill">HTML5 / CSS3</div>
+        <div class="d-skill">Sass / SCSS</div>
+        <div class="d-skill">Git / GitHub</div>
+        <div class="d-skill">Knex.js</div>
+        <div class="d-skill">Figma</div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="d-section" id="d-contact">
+      <div class="d-section-head">// 04 — CONTACT</div>
+      <div class="d-contact-grid">
+        <div class="d-contact-item"><div class="d-contact-label">EMAIL</div><div class="d-contact-val">michael@corrado.dev</div></div>
+        <div class="d-contact-item"><div class="d-contact-label">LINKEDIN</div><div class="d-contact-val">linkedin.com/in/mikeyc</div></div>
+        <div class="d-contact-item"><div class="d-contact-label">GITHUB</div><div class="d-contact-val">github.com/mikeyc</div></div>
+        <div class="d-contact-item"><div class="d-contact-label">LOCATION</div><div class="d-contact-val">Toronto, ON</div></div>
+      </div>
+    </div>
+
+  </div><!-- /d-scroll -->
+
+  <div class="d-status">
+    <div class="d-pulse"></div>
+    <span>ONLINE</span><span>UTF-8</span><span>MAIN</span><span>TORONTO</span>
+    <button class="d-build-btn" onclick="startBuild()">[ BUILD LIGHT MODE ]</button>
+  </div>
+</div>
+
+<!-- ════════ BUILD SCREEN ════════ -->
+<div class="page gone" id="build">
+  <div class="b-bar"><div class="b-fill" id="bfill"></div></div>
+  <div id="blog"></div>
+</div>
+
+<!-- ════════ LIGHT MODE ════════ -->
+<div class="page gone" id="light">
+  <div class="l-nav">
+    <div class="l-logo">MC.</div>
+    <div class="l-nav-links">
+      <a href="#" onclick="lScrollTo('l-projects');return false">Work</a>
+      <a href="#" onclick="lScrollTo('l-skills');return false">Skills</a>
+      <a href="#" onclick="lScrollTo('l-contact');return false">Contact</a>
+      <button class="l-term-btn" onclick="goBack()">⌨ Terminal</button>
+    </div>
+  </div>
+
+  <div class="l-scroll" id="lscroll">
+
+    <!-- HERO -->
+    <div class="l-hero">
+      <div class="l-hero-text">
+        <!-- background decorative plant -->
+        <pre class="l-deco-plant" id="heroDeco"></pre>
+
+        <div class="l-eyebrow">Software Engineer · Toronto · 2025</div>
+        <div class="l-name">Michael<br><span class="l-name-accent">Corrado</span></div>
+        <div class="l-bio">
+          Full-stack software engineer and BrainStation graduate. I build products
+          people actually enjoy using — from database to UI, no gaps left unfilled.
+        </div>
+        <div class="l-chips">
+          <div class="l-chip fill">React</div>
+          <div class="l-chip">Node.js</div>
+          <div class="l-chip">Express</div>
+          <div class="l-chip">MySQL</div>
+          <div class="l-chip">TypeScript</div>
+        </div>
+      </div>
+
+      <div class="l-photo-panel">
+        <div class="l-photo-dots"></div>
+        <div class="l-photo-placeholder">
+          <div class="l-photo-letter">M</div>
+        </div>
+        <div class="l-photo-hint">Your photo<br>goes here</div>
+        <div class="l-photo-tag">Michael Corrado — SWE '25</div>
+      </div>
+    </div>
+
+    <!-- plant divider -->
+    <div class="l-plant-divider" id="divider1"></div>
+
+    <!-- PROJECTS -->
+    <div class="l-section" id="l-projects">
+      <pre class="l-section-deco" id="projDeco"></pre>
+      <div class="l-section-head">Selected Work</div>
+      <div class="l-proj-grid">
+        <div class="l-proj">
+          <div class="l-proj-num">01</div>
+          <div class="l-proj-name">InStock</div>
+          <div class="l-proj-stack">React · Node.js · Express · MySQL</div>
+          <div class="l-proj-desc">Inventory management system built in a team sprint. Full CRUD, REST API design, relational DB.</div>
+          <div class="l-proj-arrow">View project →</div>
+        </div>
+        <div class="l-proj">
+          <div class="l-proj-num">02</div>
+          <div class="l-proj-name">Dream Team Generator</div>
+          <div class="l-proj-stack">React · Node.js · External API</div>
+          <div class="l-proj-desc">Build and compare fantasy sports teams with live data. API integration and custom state management.</div>
+          <div class="l-proj-arrow">View project →</div>
+        </div>
+        <div class="l-proj">
+          <div class="l-proj-num">03</div>
+          <div class="l-proj-name">Eventure</div>
+          <div class="l-proj-stack">Node.js · Express · MySQL</div>
+          <div class="l-proj-desc">Event management backend. Auth, relational data, clean REST endpoints.</div>
+          <div class="l-proj-arrow">View project →</div>
+        </div>
+        <div class="l-proj">
+          <div class="l-proj-num">04</div>
+          <div class="l-proj-name">More on GitHub</div>
+          <div class="l-proj-stack">Various</div>
+          <div class="l-proj-desc">More projects, experiments, and contributions on GitHub.</div>
+          <div class="l-proj-arrow">View GitHub →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- plant divider -->
+    <div class="l-plant-divider" id="divider2"></div>
+
+    <!-- SKILLS -->
+    <div class="l-section" id="l-skills">
+      <pre class="l-section-deco" id="skillDeco"></pre>
+      <div class="l-section-head">Skills</div>
+      <div class="l-skill-grid">
+        <div class="l-skill">React</div><div class="l-skill">Node.js</div>
+        <div class="l-skill">Express.js</div><div class="l-skill">JavaScript</div>
+        <div class="l-skill">TypeScript</div><div class="l-skill">MySQL</div>
+        <div class="l-skill">REST APIs</div><div class="l-skill">HTML / CSS</div>
+        <div class="l-skill">Sass</div><div class="l-skill">Git</div>
+        <div class="l-skill">Knex.js</div><div class="l-skill">Figma</div>
+      </div>
+    </div>
+
+    <!-- plant divider -->
+    <div class="l-plant-divider" id="divider3"></div>
+
+    <!-- CONTACT -->
+    <div class="l-section" id="l-contact">
+      <div class="l-section-head">Get In Touch</div>
+      <div class="l-contact-grid">
+        <div class="l-contact-item"><div class="l-c-label">Email</div><div class="l-c-val">michael@corrado.dev</div></div>
+        <div class="l-contact-item"><div class="l-c-label">LinkedIn</div><div class="l-c-val">linkedin.com/in/mikeyc</div></div>
+        <div class="l-contact-item"><div class="l-c-label">GitHub</div><div class="l-c-val">github.com/mikeyc</div></div>
+        <div class="l-contact-item"><div class="l-c-label">Location</div><div class="l-c-val">Toronto, ON</div></div>
+      </div>
+    </div>
+
+    <div class="l-footer">
+      <div class="l-footer-logo">MC.</div>
+      <div>Michael Corrado · Full-Stack Software Engineer · 2025</div>
+      <div>Built with React</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── ASCII portrait (full art from user) ── */
+document.getElementById('portrait').textContent = `........................................................................................................................
+.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx+xxxxxxxxxxxx+++xxxx+xxxx+++++++++++++xxxx+xxxxxxxxxxxxxxxxx++xxx+xxxxxx.
+.xxxxxxxxxxxxxxxxxxxxxxxxxxxxx+++xxxxxxxxx++xxxxXXXXxxxXXXXXXXXxx+xxxxx+;+xxxx++++++++++++++++xxxxxxxxxxxxx++++++xxxxxx.
+.xxxxxxxxxxxxxxxxxxxxx++xxxxxxxxxxxxxxxxxx+xxXXXx++xxxxxxX$$X$$$XxxxxxxxXXx+++xxx+++xxx++xxxxxx+xxx+++++xxxxxxxxxxxxxxx.
+.xx+++xx++++xxxxxxxx++xxxxxxxxxxxxxxxxxx++xxxxxX;:;;+Xx+x;::+::+x$Xxxxxxx+;+xxxxxXxxxxxxxx+++xxx+xxxxxx+x+xxxxxxxxxxxxx.
+.xxx+++++xxxx++++++xxx+xxxxxxxxxx++++xxx+xxX$x+::;XXx:...:;::::+;XXX++x+;;+xxxxxxxxx++++xxxxxxxxxxx++++++xxxxxxxxxxxxxx.
+.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx+xXXx;;::;.....:;;:.:;;;::.:x++xXXXx;;+xxxxxxxxxxxx+++;+xxxxxx+++++xxxxxxxxxxxxxx.
+.XXXxxxx++xxxxxxXxxxxxxxxxxxxx++xxx+xxxx+xX$+::+x;;:...:::...::;.:.;X$XXX$Xxxxxxxxxxxxx++++++++xx++xxxxxxxxxxxxx++x+xxx.
+.;++++++xxxx++x++xx+++xx+x+++++xxxxxxxxxX:..:::...+$$XX+++++;+++xX&$;::;+xxXxxxxxx+;++xx++xxxxxxx+xxx+x+xxxxxxxxxxxxxxx.
+.xxxxxxxxxxxxxx+++xxxxxx+xxxxxx+xxxxxxxX++&xxx+:;;::....:::..::;:::..;;:.::xxxxxxxxxxxxxXxxxxx+xxxx++xxxxxxxx+++xxxxxxx.
+.xxxxxxxxxxxxxxxx+++xxxxxxxxxxxxxxxxxxxX+:++:.:+;::::::::::::;:::+;..:;;+x+Xxxxxxxxxx+++xx+x+++xxxx+++++xxxxx+xxxxx+++x.
+.xxxxxx++xx++xxxxxxx++xxxx+++xxxxxxx+++x+;;X+::...::;:::::.:.:.:::;x;;;:;x+$x+++++++xxxx++xxxxxx+xxxxxxx+x+xxxxxxxxxxxx.
+.xxx+xxxxxxxxxx+xxxxxxx+xxxxxxxxxxxxxxxxx+;:x;+;;;::.::.::+;::.::;+x+xX;;+;Xxxx+xxxxxxx+++xx++++++xxxxxx++xxxxxxxxxxxxx.
+.xxxxxxxxxx+++xxxxxxxxxxxxxxx++++++xxxxxx+;:;;:;++++++;;++;.:;;;;++;+x;;;;+X+xxxx+xx+++++++xx+++++++++xxx+xxxxxxxxxxxxx.
+.xxx+xxxxxxxxxxxxxxxx+++xxxx++++xx+xx++xxxxx+;..:;;:::;;;;;+x+;;++++xx+xxxxx++;++x+xxxxxxxxxxxxxx+++++++++++++++xxxxxxx.
+.xxxx++xxxxxxxxxxxxxxxxx+++xxXxx+xxxxxxxXx;++x+xxxXxx+++++++;:;+;++xX$$&Xx+xxxx+++++++++++xxxxxxxxx++++;++xxxxxxxxxxxxx.
+.xxxxxxxx+xx++++xxxxxx++x++x+++++++++xxx+++;xXXXXxxxxXXXXXXx++++++x+;..:x+xxxxxxXxxxxx+x+++xx+;;++x+xx+xxXXxXxxxxx+;+xx.
+.xxxxxxxxxxxxxxxxxx+xxxxxxxxxxxxxxxxxxxX+;+;xxxxx+xx;......;:+++xx;.:+x$xx++xxx+++xxxxxxxxxxxx+;++++xxXXXxxxxx+xxx+x++x.
+.x++++xxxxxxxxxxxx+xxxxxxxxxxxxxxxxxxxxxx;+;+$xx++++xX&&&&+::;;;+;.:;++Xx+++x++++xxxx+xxx+++xXxxXx+;;xxxx++++xxxx++++;;.
+.xxx+++x++xxx+++x++++++xx++++xxxxx+xxxxxXX+;:Xxxx+:::......::;+;xx:::+XX++xxx++xxxxxxxxxxx+++xxxxxxx+;;;;;++++;;+++++xx.
+.xxx++++++++xxxxxxxx++xx+xxxx+xxx++xxxxxxxXx;;+xx++x+++;;;+++++;+&&$x+Xx+++xxxx+x++++xxxxxxxxxxx++xxxxxx++++++++xxXxxxx.
+.++xxxxxxxxxxxxx++xxxxxxxxxx++++xxxx++xxxxxxX$x+Xx+++++++x+;;++;+$::+xXXxxx++;;;+++++++++xxxx+++xxxxxxx++;;;+xxxx+xxx++.
+.xx+++++++xxxx++++x++xx++++xxxxxxx++xxxxxxxx+Xx+xxxx+++xx+++$XX++&X:;+Xxx++xx++++++++++;;;;;;;;+x++++xxxxxxxxxx+++xxxxx.
+.xx++xxxxxxxxxxxx+++xx+++xxxxx++xxxxxx+++xx++Xx;;++xxxx;:;::...;;;;:;x+;+++xxXxx+;;;++x+++++++xXxxx++xxxXx++xXXXXxxxx+;.
+.+++xxxxxxxxxx++x+++xx+xxxx+++++xxxx++xxx+++xXX:;+;:+x::::xxxx+::;;;X$$x+xx+++xxx+++xxx+xxxxxxxxxxxxx++++xxxxxxx+xxxx++.
+.xx++xx++++++++xxxxxxxxxxxxxxx++;;;+xxxxxxxxxxXx.::;xXx:+x;::..:;$+;..:XX+;::;;+++++;;++xxxxxx+++++++;;++;:;;;++++xxxxx.
+.xxxxxxxx++++xxxx+++++++++++xxxxxxxxxxx+xXxXX+$X$X::.:::;+xXXXxxXX:x&$::x$$xxxx++x+++++xxx+xxxxxxxxxX+;+xx++xxxxxxxxxxx.
+.xxxx++xxxxxx++++xxxxx+x+++;;;+xxXXxxx++xX:$X;:XxxX+::;;:::::::x;::X&&;::xx$Xx+;+++xxXxxx++;++xxxxxxx++xxxxxxxxxxxxx+++.
+.xxxxxxxxxxxxxxxxxxxxxxxx+++xxx++;;;+xxX$:.&xXx:+++xX;::;;;;;;:::;X&&+:.::::+xXXx;;;;;++x++xx+++++++;;++xxxxxxxxxxx++++.
+.xxxxxxxxx+xxxx+++x++xxxxxxxxxxxxxxxxXxxx..&XXxXx::+xxx;::::...:+xXx+..;;:::::::;xXXXXXXXxxxxx+xxxx++++++;+++;;+xx+;+++.
+.xxxx+xxx+++xxx++x+xxxx+++xxXxxxxxxX+;+X+..$XxxxXXx:::;+;+xX$&$&X+;+.....x+:+:::;::::;;+xxXXXXxXxxxxxx+++xx++++++x+++++.
+.xxXxxxxxx++xx++x++;++x+++++++xXXxx;;xxx:..XXxxxxX&&$X&&&&&$x+xxx+XX..$&&&$&&&&$&&&&&x;;;;;++xxX$$$$$XxxxXXx+++;;++xxx+.
+.X$Xx++++xx+++++xxxx+++++++xXXx;;+::;:+x.;;XXxxx$&$:;:....:&&&$xxx&;.:.$XxxxX$;xx;..:;;;;;;;;;;::;::+XXxxx++xxxxxx+xxxx.
+.::x+++++xXXXxxx++xXxxxxxXx+;;+XXx;;:+X;.:.;XxX&&............:$&&&X.:.:xXXX$&X:;:;.;::::::.:.::::+:::;Xxxx++xx++x++++++.
+.;;XXXXxx++xxxxxxxXXXXX++++++x++.::;+xx:.xXX&&&;.:&&x;;;;+++....:X:.:+&&&+$&X.;XX$&&+.::::::::..:...;;xxxx+;;+++++++++x.
+.++;;;;;+x+;;;+xXX;Xx++++;;;;:.+:::+++x:.++XX:..::::+.::..:..X$xxx.+&&X:......X&&X:&&:::::::::::::++.::Xx++++++++++++++.
+.;;:...:::;;;:;xX;.x+;;;:::::;;x::;+++X.:+++.+xXXx..:.:;++::&$xx$X.......:::..........::::::::::::.:Xx:X++++++xxxxxxxx+.
+.xxXXXxx++xx+;;Xx..x;;:::::;;+;x;;++;xx.;xxxxxxxxX&$.::::::+X++xX:....::::;::::::::::::::::::::::::..:+x++xx+++;+++++++.
+.xxxxxXXXxxxxxXX+..+;;;;;;+++;.+:;;;+X:.;+++xxx+xX$+.;:;;;::x++XX..:::::::::::::::::::::::::::::::;+:.++x+xxxx+;;++++++.
+.xxxxxxxxxxx++x;x..;+;;;;;:.:;.;+;;;+X..xxx++xxxxxX:.::::::.X++$+.::::::::::::::::::::::::::::::;;:::;::xX+;;++xxxx+;;+.
+.xxxxxxxxxxxxxx&x:.:+;:;::.;x+:;+:;+xx.:x+++++x++XX..::::::.Xxx$..::::::::::::::::::::::::::::::::::;;++;+X+;;;++++++xx.
+.xxxx+++++++++x$+;..+;::.:+xx;::x;;+x+.;++++++xxx&x.::::::::xxXX..::::::::::::::::::::::::::::::::::;;;:::x$Xx+;;;;;+++.
+.xxxxxxxxxxxxx$x;+..+::.:xX+:::.X:;+X:.+++++++xxX$:.::::::::xX&:.::::::::::::::::::::::::::::::::::::.:;x::xXx+++++++++.
+.xXxxxxxxxxxxx$::+..+;;+xx;:.:..x;;+X..+++++++xxXX..::::::.;X$$..::::::::::::::::::::::::::::::::::::....+X;$++;++++xx+.
+.xxxxxxxxxxxxxX:++;.+x++;:..:::;x:;+x..x+;+++x++Xx.:::::::.x&&..:::::::::::::::::::::::::::::::::::;;+;:...:&XxxXx+++++.
+.xxxxxxxxxxxxXx:+;;..x+;::;;;++xx:;xx::x++++++xx$+.:::::::.$&x..:::::::::::::::::::::::::::::::::::.::;+x+:..+x++++++++.
+.xxxxxxxxxxxx$x;+;;..+x++++++++xx;;++:.+x+++++x+X:.:::::::.$&..:::::::::::::::::::::::::::::::::.::::;;:::::::;x+++++++.
+.Xxxxxxxxxxxx$x;;::...x+;;;;;+++;+::::.:X++++;++x::...:::.:&:......:::::::::::::::::::::::::::::.:::::::;;;;xXXx++:XxxxxxXX.
+.Xxxxxxxxxxxx$+:.:;:..:x+;;;;;;;:;;.:;:.;X+;+++xx..::.....;x..;X$;....:::::::::::::::::::::::::::::::::.....;xXXXx+++++.
+.Xxxxxxxxxxxxx::+Xx::..:x+;;:::::::;::;:.+X++++x;.x&&&&&&::xx&$XX&&&x....::::::::::::::::::::::::::::::;;++;:..;x+;++++.
+.xxxxxxxxxxxXX;+Xx:.::..;X+;;;;::::::::::.+Xx+xx:...:+xXX$&$+::.:::+X&&+...:::::::::::::::::::::::::::::::::;+;:+xxxx++.
+.xxxxxxxxxxxXx+$x:.::::..+x+;;;;:::::::::..+x;;+.::&X...;xxXX$&&&&&$$XX&&...::::::::::::::::::::::::::;;;::::::::+x++++.
+.XxxxxxxxxxxXx$x....::::..xx;:;;:::;:::;::..+++;...&X&&X..X+:::::;;;;;;x&&:..:::::::::::::::::::::::::...:;xXXXx;:++;;;.
+.xxxx+x+++xx$X;....::::::..x+;::::::::::;::..X$:.+&;:++xX$$x++;++++++xx++X&&....:::::::::::::::::::::::::.......xXx$XXx.
+.XxxxxxxxxX&$...:;++;::::..;x+;;::::::::::::..&..+&&X:::+x;:::;+;;;+++++++x$&&............::::::::::::::::;;;++;...&&XX.
+.XXXXxxxxX$X..++;:..::::::..X+;;;::;;:::::;::..:...+$&$xxXx;;;+;;;;;;;+++++xx$&&;X$Xx;:.....................:;:.....X&x.
+.++++++++xx.;x+:::;;:::::::..X+;;::;::::::::;::.:&&....:;+x;++++;;+;;;+;;;;;;++x+:+X$$$$$&$Xxx:++:..:;:::+x;:.....X:.&$.
+.xxxx+++xX;++:..:+;:::::::::.+x;;;;;:.:::::::;:..:&&&&&x;xx+;++++++++++;;;;;++;+&$...::;;;;x..+X.+X&&XxxXxx:+&&$;:..:.$.
+.++++++++x+;:+X$X;.:::::::::..$;+;+;:.::::::::::....xXX$$Xx+;+++;+++++++++;+;;xX::.::....::xX...+;:..xx+:.;::.:x+x+...&.
+.xxxxxx+X&&&$+......:::::::::.x;;;;;+;;;;;::::::::.::....:x&&$$x++++;+;;+;;++;:.:.:::::::...:+;...+$:..:+;..+:.::;;;..x.
+.xxxxxxX&+...:..:::::.........&;.......::::::::::::;..:........x&&&&&&&&$xxxxX&:.:::::::::::.::::..;:..:::::::::::::...
+.Xxxxxx$;......:.......&&&&&+.:.............:.::::;::::::::::............;$&$;:.:.::::::::::;::::::::;::::::::::::::::..
+.xxxxxX$;:;X$+:......+&$+xX$&&&&&;...:;;++++x+::::.:::::::::::::::............;+x::::::::::::;::::::::;:::::::::::;:::..
+.xxxxxX:.x$XX$+:X$x&&&&$xXX$$x::+&&&&+;xx+:::..::::::::::::::::::::::::::::::.:x+::::::::::::::::::::::;::::::::::::::..
+.xxxxx$;:xx+;:xXxX$$x;xXXXX;:+x+:;xxX$X:......:::::::::::::::::::::::::::::::.:X;.::::::::::::::::::::::;:::::::::::....
+........................................................................................................................`;
+
+/* ── ASCII name block ── */
+document.getElementById('asciiName').textContent =
+` __  __ ___ ___ _  _   _   ___ _
+|  \\/  |_ _/ __| || | /_\\ | __| |
+| |\\/| || | (__| __ |/ _ \\| _|| |__
+|_|  |_|___\\___|_||_/_/ \\_\\___|____|
+
+  ___  ___  ___ ___   _   ___   ___
+ / __|/ _ \\| _ \\ _ \\ /_\\ |   \\ / _ \\
+| (__| (_) |   /   // _ \\| |) | (_) |
+ \\___|\\___/|_|_|_|_/_/ \\_\\___/ \\___/`;
+
+/* ── ASCII plants ── */
+const PINE_TREE =
+`       *
+      ***
+     *****
+    *******
+   *********
+  ***********
+      |||
+      |||`;
+
+const TALL_PINE =
+`        ^
+       /|\\
+      / | \\
+     /  |  \\
+    / ^ | ^ \\
+   /  /|\\  \\
+  /  / | \\  \\
+      |||
+      |||
+      |||`;
+
+const MONSTERA =
+`    ( \\  / )
+   (  \\/ /  )
+  ( \\ /\\/ / )
+   (\\ \\/ //)
+    (\\  //)
+     (\\ /)
+      |||
+      |||`;
+
+const FERN =
+`   \\  |  /
+  \\ \\|/ /
+~~ \\ | / ~~
+    \\|/
+    /|\\
+   / | \\`;
+
+const BAMBOO =
+`  | || |
+  | || |
+--+-++-+--
+  | || |
+  | || |
+--+-++-+--
+  | || |
+  | || |`;
+
+const SMALL_PLANT =
+`   \\|/
+    |
+   /|\\
+  / | \\
+    |`;
+
+const BIG_TREE =
+`        %%%%
+      %%%%%%%%
+    %%%%  %%%%
+  %%  \\  /  %%
+ %%    \\/    %%
+%%   %%%%%%   %%
+ %%  \\  /  %%
+  \\   \\/   /
+   \\   |  /
+    \\  | /
+       |
+       |`;
+
+/* dividers — a row of mixed small plants */
+const DIVIDER =
+`  *   \\|/   *    ^^^   *   \\|/   *    ^^^   *   \\|/   *    ^^^   *   \\|/   *
+  |    |    |     |    |    |    |     |    |    |    |     |    |    |    |`;
+
+document.getElementById('heroDeco').textContent    = BIG_TREE;
+document.getElementById('divider1').textContent    = DIVIDER;
+document.getElementById('divider2').textContent    = DIVIDER;
+document.getElementById('divider3').textContent    = DIVIDER;
+document.getElementById('projDeco').textContent    = TALL_PINE;
+document.getElementById('skillDeco').textContent   = MONSTERA;
+
+/* ── scroll helpers ── */
+function dScrollTo(id) {
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth'});
+}
+function lScrollTo(id) {
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth'});
+}
+
+/* ── scroll reveal ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.08});
+document.querySelectorAll('.d-section,.l-section').forEach(el => obs.observe(el));
+
+/* ── build animation ── */
+const buildLines = [
+  {t:'$ corrado.dev --build --mode=light',        cls:'b-ok',   ms:0},
+  {t:'  Initialising build pipeline...',           cls:'b-info', ms:380},
+  {t:'  ✔  Design tokens loaded  (52 values)',     cls:'b-ok',   ms:720},
+  {t:'  ✔  React components compiled  (26 files)',  cls:'b-ok',   ms:1060},
+  {t:'  ✔  Assets bundled — 147kb gzipped',        cls:'b-ok',   ms:1360},
+  {t:'  ✔  Earth tone palette applied',            cls:'b-ok',   ms:1650},
+  {t:'  ⚠  ASCII portrait replaced with real face',cls:'b-warn', ms:1980},
+  {t:'  ✔  Botanical decorations rendered',        cls:'b-ok',   ms:2280},
+  {t:'  ✔  Halftone overlay injected',             cls:'b-ok',   ms:2530},
+  {t:'  ✔  Georgia serif loaded',                  cls:'b-ok',   ms:2780},
+  {t:'  ✔  Build complete — 2.4s',                cls:'b-ok',   ms:3030},
+  {t:'',                                            cls:'b-info', ms:3280},
+  {t:'  Launching light mode...',                   cls:'b-done', ms:3480},
+];
+
+function startBuild() {
+  const dark = document.getElementById('dark');
+  dark.classList.add('hidden');
+  setTimeout(() => {
+    dark.classList.add('gone');
+    const bm = document.getElementById('build');
+    bm.classList.remove('gone');
+    runBuild();
+  }, 500);
+}
+function runBuild() {
+  const log = document.getElementById('blog');
+  const fill = document.getElementById('bfill');
+  buildLines.forEach((item,i) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'b-line '+item.cls;
+      el.textContent = item.t;
+      log.appendChild(el);
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
+      fill.style.width = Math.round(((i+1)/buildLines.length)*100)+'%';
+      if(i === buildLines.length-1) setTimeout(showLight, 700);
+    }, item.ms);
+  });
+}
+function showLight() {
+  document.getElementById('build').classList.add('gone');
+  const l = document.getElementById('light');
+  l.classList.remove('gone');
+  l.classList.add('hidden');
+  requestAnimationFrame(() => requestAnimationFrame(() => l.classList.remove('hidden')));
+}
+function goBack() {
+  const l = document.getElementById('light');
+  l.classList.add('hidden');
+  setTimeout(() => {
+    l.classList.add('gone');
+    document.getElementById('blog').innerHTML = '';
+    document.getElementById('bfill').style.width = '0%';
+    document.getElementById('lscroll').scrollTop = 0;
+    const dark = document.getElementById('dark');
+    dark.classList.remove('gone','hidden');
+    dark.classList.add('hidden');
+    requestAnimationFrame(() => requestAnimationFrame(() => dark.classList.remove('hidden')));
+  }, 500);
+}
+
+/* ── active tab on scroll ── */
+const dScroll = document.getElementById('dscroll');
+dScroll.addEventListener('scroll', () => {
+  const ids = ['hero','d-about','d-projects','d-skills','d-contact'];
+  const tabs = document.querySelectorAll('.d-tab');
+  let cur = 0;
+  ids.forEach((id,i) => {
+    const el = document.getElementById(id);
+    if(el && dScroll.scrollTop >= el.offsetTop - 100) cur = i;
+  });
+  tabs.forEach((t,i) => t.classList.toggle('active', i === cur));
+});
+</script>
+</body>
+</html>

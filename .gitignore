@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build output — generated files, not source
+client/dist/
+
+# Environment variables — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# Vite cache
+.vite/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Visual companion and planning artifacts
+.superpowers/
+docs/superpowers/
+
+# Claude / AI tooling
+.claude.json
+.claude/
