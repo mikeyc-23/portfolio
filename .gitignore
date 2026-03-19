@@ -19,6 +19,13 @@ client/dist/
 Thumbs.db
 desktop.ini
 
+# Root-level package files (project uses client/ and server/ subdirectories)
+/package.json
+/package-lock.json
+
+# Local scratch/reference assets — not source code
+scratch/
+
 # Visual companion and planning artifacts
 .superpowers/
 docs/superpowers/
