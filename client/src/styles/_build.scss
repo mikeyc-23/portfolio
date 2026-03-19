@@ -1,1 +1,27 @@
 @use './variables' as *;
+
+.b-build {
+  background: $bg-dark;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 4rem;
+  gap: 0.6rem;
+}
+
+.b-build__line {
+  font-family: $font-mono;
+  font-size: 0.95rem;
+  color: $green-primary;
+  letter-spacing: 0.05em;
+  opacity: 0;
+  animation: fade-in 0.2s ease forwards;
+}
+
+// TODO: turtle ASCII art goes here — a pre.b-build__turtle block
+// positioned bottom-right, appears after all lines are done
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
