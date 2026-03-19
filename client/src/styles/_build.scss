@@ -1,27 +1,48 @@
 @use './variables' as *;
 
 .b-build {
-  background: $bg-dark;
+  background: #0d0d0b;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 3rem 4rem;
-  gap: 0.6rem;
+  padding: 0;
+  border: 1px solid $green-dim;
+}
+
+// Terminal title bar
+.b-build::before {
+  content: 'claude --portfolio';
+  display: block;
+  background: #161613;
+  border-bottom: 1px solid $green-dim;
+  padding: 0.5rem 1rem;
+  font-family: $font-mono;
+  font-size: 0.7rem;
+  color: $green-dim;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
 }
 
 .b-build__line {
+  padding-left: 1.5rem;
   font-family: $font-mono;
-  font-size: 0.95rem;
-  color: $green-primary;
-  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
   opacity: 0;
-  animation: fade-in 0.2s ease forwards;
+  animation: b-line-in 0.1s ease forwards;
+
+  &:not(:last-child) {
+    color: $green-mid;
+  }
+
+  &:last-child {
+    color: $green-primary;
+  }
 }
 
-// TODO: turtle ASCII art goes here — a pre.b-build__turtle block
-// positioned bottom-right, appears after all lines are done
+// TODO: .b-build__turtle — ASCII turtle, bottom-right of .b-build__body
 
-@keyframes fade-in {
+@keyframes b-line-in {
   from { opacity: 0; transform: translateX(-6px); }
   to   { opacity: 1; transform: translateX(0); }
 }
