@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react'
+import turtle from '../assets/turtle-removebg-preview.png'
 type Props = {
     mode: string
     onDone: () => void
@@ -38,9 +39,20 @@ function BuildTransition({mode, onDone} : Props) {
     }, [])
     return (
         <div className="page b-build">
-            {lines.map((line, index) => (
-                <p key={index} className="b-build__line">{line}</p>
-            ))}
+            <div className="b-build__header">
+                <img src={turtle} alt="" className="b-build__turtle" />
+                <div className="b-build__meta">
+                    <p className="b-build__meta-name">mikey.exe v1.0.0</p>
+                    <p className="b-build__meta-item">Model: Sonnet 4.6 · Max ∞</p>
+                    <p className="b-build__meta-item">/users/mikey/code/portfolio</p>
+                    <p className="b-build__meta-item">Vibes: immaculate</p>
+                </div>
+            </div>
+            <div className="b-build__lines">
+                {lines.map((line, index) => (
+                    <p key={index} className="b-build__line">{line}</p>
+                ))}
+            </div>
         </div>
     )
 }

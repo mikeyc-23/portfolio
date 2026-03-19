@@ -40,7 +40,45 @@
   }
 }
 
-// TODO: .b-build__turtle — ASCII turtle, bottom-right of .b-build__body
+.b-build__header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 1.5rem 0.75rem;
+  border-bottom: 1px solid $green-dim;
+}
+
+.b-build__turtle {
+  width: 72px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.b-build__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.b-build__meta-name {
+  font-family: $font-mono;
+  font-size: 0.85rem;
+  color: $green-primary;
+  letter-spacing: 0.05em;
+}
+
+.b-build__meta-item {
+  font-family: $font-mono;
+  font-size: 0.7rem;
+  color: $green-dim;
+  letter-spacing: 0.03em;
+}
+
+.b-build__lines {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.5rem;
+}
 
 @keyframes b-line-in {
   from { opacity: 0; transform: translateX(-6px); }

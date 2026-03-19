@@ -1,6 +1,7 @@
 @use './variables' as *;
 
 .e-entry {
+  position: relative;
   background: $bg-dark;
   display: flex;
   align-items: center;

@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import MatrixRain from '../components/MatrixRain'
 
 type Props = {
     onSelect: (value:string) => void
@@ -30,6 +31,7 @@ function EntryScreen({ onSelect }: Props) {
 
     return (
         <div className="page e-entry">
+            <MatrixRain />
             <div className="e-entry__content">
                 <h1 className="e-entry__title">
                     {displayName}<span className="e-entry__cursor">{showCursor ? '_' : '\u00A0'}</span>
