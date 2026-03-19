@@ -1,0 +1,55 @@
+@use './variables' as *;
+
+.e-entry {
+  background: $bg-dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.e-entry__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.e-entry__title {
+  font-family: $font-mono;
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  color: $green-primary;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.e-entry__subtitle {
+  font-family: $font-mono;
+  font-size: 1rem;
+  color: $green-mid;
+  letter-spacing: 0.1em;
+}
+
+.e-entry__buttons {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.e-entry__btn {
+  font-family: $font-mono;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $green-primary;
+  background: transparent;
+  border: 1px solid $green-dim;
+  padding: 0.75rem 2rem;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: $green-primary;
+    border-color: $green-primary;
+    color: $bg-dark;
+  }
+}
