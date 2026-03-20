@@ -1,46 +1,74 @@
 import {useState, useEffect} from 'react'
-import turtle from '../assets/turtle-removebg-preview.png'
+import treeVideo from '../assets/mascot-tree.mp4'
+
+type LineType = 'ok' | 'info' | 'warn' | 'done'
+type BuildLine = { text: string; type: LineType }
+
 type Props = {
     mode: string
     onDone: () => void
 }
 
 function BuildTransition({mode, onDone} : Props) {
-    const [lines, setLines] = useState<string[]>([])
-    const sequence = mode === 'terminal'
-    ? [
-        '> Initializing dev environment...',
-        '> Loading portfolio modules...',
-        '> Counting Tokens...',
-        '> Using water for some reason...',
-        '> Compiling components...',
-        '> Zig-zagging through the matrix...',
-        '> All systems ready.',
-    ] : [
-        '> Preparing your experience...',
-        '> Loading case studies...',
-        '> Curating Projects...',
-        '> Adding luck...',
-        '> Zig-zagging through the details...',
-        '> Welcome.',
-    ]
+    const [lines, setLines] = useState<BuildLine[]>([])
+    const [progress, setProgress] = useState(0)
 
     useEffect(() =>{
+        const sequence: BuildLine[] = mode === 'terminal'
+        ? [
+            { text: '$ mikey.exe --build --mode=terminal', type: 'ok' },
+            { text: '  Initialising dev environment...', type: 'info' },
+            { text: '  ✔  Portfolio modules loaded', type: 'ok' },
+            { text: '  ✔  React components compiled  (18 files)', type: 'ok' },
+            { text: '  ✔  Assets bundled — 142kb gzipped', type: 'ok' },
+            { text: '  ✔  Green palette applied', type: 'ok' },
+            { text: '  ✔  Matrix rain initialised', type: 'ok' },
+            { text: '  ✔  Pixel turtle deployed', type: 'ok' },
+            { text: '  ✔  Build complete — 1.8s', type: 'ok' },
+            { text: '', type: 'info' },
+            { text: '  Launching terminal mode...', type: 'done' },
+        ] : [
+            { text: '$ mikey.exe --build --mode=light', type: 'ok' },
+            { text: '  Initialising build pipeline...', type: 'info' },
+            { text: '  ✔  Design tokens loaded  (52 values)', type: 'ok' },
+            { text: '  ✔  React components compiled  (26 files)', type: 'ok' },
+            { text: '  ✔  Assets bundled — 147kb gzipped', type: 'ok' },
+            { text: '  ✔  Earth tone palette applied', type: 'ok' },
+            { text: '  ✔  Build complete — 2.4s', type: 'ok' },
+            { text: '', type: 'info' },
+            { text: '  Launching light mode...', type: 'done' },
+        ]
+
+        setLines([])
+        setProgress(0)
         let i = 0
         const interval = setInterval(() => {
-            setLines(prev => [...prev, sequence[i]])
+            const item = sequence[i]
+            if (!item) { clearInterval(interval); return }
             i++
-            if (i === sequence.length) {
+            setLines(prev => [...prev, item])
+            setProgress(Math.round((i / sequence.length) * 100))
+            if (i >= sequence.length) {
                 clearInterval(interval)
                 setTimeout(onDone, 800)
             }
-        }, 800)
+        }, 350)
         return () => clearInterval(interval)
-    }, [])
+    }, [mode])
+
     return (
         <div className="page b-build">
             <div className="b-build__header">
-                <img src={turtle} alt="" className="b-build__turtle" />
+                <div className="b-build__mascot">
+                    <video
+                        src={treeVideo}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="b-build__mascot-video"
+                    />
+                </div>
                 <div className="b-build__meta">
                     <p className="b-build__meta-name">mikey.exe v1.0.0</p>
                     <p className="b-build__meta-item">Model: Sonnet 4.6 · Max ∞</p>
@@ -48,9 +76,12 @@ function BuildTransition({mode, onDone} : Props) {
                     <p className="b-build__meta-item">Vibes: immaculate</p>
                 </div>
             </div>
+            <div className="b-build__progress">
+                <div className="b-build__fill" style={{ width: `${progress}%` }} />
+            </div>
             <div className="b-build__lines">
-                {lines.map((line, index) => (
-                    <p key={index} className="b-build__line">{line}</p>
+                {lines.filter(line => !!line).map((line, index) => (
+                    <p key={index} className={`b-build__line b-build__line--${line.type}`}>{line.text}</p>
                 ))}
             </div>
         </div>

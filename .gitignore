@@ -29,6 +29,9 @@ scratch/
 # Personal notes — plain English project reference
 notes.md
 
+# Build plan — local task tracker
+BUILD_PLAN.md
+
 # Visual companion and planning artifacts
 .superpowers/
 docs/superpowers/

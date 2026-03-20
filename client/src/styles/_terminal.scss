@@ -11,6 +11,23 @@
     overflow: hidden;
     font-family: $font-mono;
     color: $green-mid;
+    position: relative;
+}
+
+// CRT scanline overlay — very subtle, adds that authentic terminal texture
+.t-terminal::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
 }
 
 .t-terminal__scroll {
@@ -29,6 +46,7 @@
     display: flex;
     border-bottom: 1px solid $green-dim;
     flex-shrink: 0;
+    background: rgba($green-dim, 0.03);
 }
 
 .t-tabs__tab {
@@ -41,28 +59,79 @@
     letter-spacing: 0.1em;
     padding: 0.75rem 1.5rem;
     cursor: pointer;
-    transition: color 0.2s, background 0.2s;
+    transition: color 0.2s, background 0.2s, text-shadow 0.2s;
 
     &:hover {
         color: $green-primary;
-        background: rgba($green-dim, 0.1);
+        background: rgba($green-dim, 0.12);
+        text-shadow: 0 0 8px rgba($green-primary, 0.4);
     }
 
     &--active {
         color: $green-primary;
-        border-bottom: 1px solid $green-primary;
+        border-bottom: 2px solid $green-primary;
         margin-bottom: -1px;
+        text-shadow: 0 0 10px rgba($green-primary, 0.5);
     }
 }
 
-.t-tabs__turtle {
-    width: 52px;
-    height: auto;
-    image-rendering: pixelated;
+.t-tabs__mascot {
     margin-left: auto;
-    margin-right: 0.75rem;
-    opacity: 0.85;
+    margin-right: 0.5rem;
+    width: 60px;
+    height: 44px;
+    overflow: hidden;
     align-self: center;
+    border-radius: 2px;
+}
+
+.t-tabs__mascot-video {
+    width: 130%;
+    height: 130%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0.85;
+    filter: sepia(1) saturate(3) hue-rotate(70deg) brightness(0.8);
+}
+
+// hero header
+
+.t-hero {
+    text-align: center;
+    padding: 2.5rem 0 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid $green-dim;
+}
+
+.t-hero__name {
+    font-size: 1.6rem;
+    color: $green-primary;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba($green-primary, 0.3);
+    margin-bottom: 0.5rem;
+}
+
+.t-hero__tagline {
+    font-size: 1rem;
+    color: $green-dim;
+    letter-spacing: 0.15em;
+}
+
+.t-hero__role {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: $green-mid;
+    letter-spacing: 0.06em;
+}
+
+.t-hero__ws-logo {
+    width: 20px;
+    height: 20px;
+    filter: invert(68%) sepia(30%) saturate(700%) hue-rotate(60deg) brightness(95%);
 }
 
 // shared section header
@@ -74,6 +143,7 @@
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid $green-dim;
+    text-shadow: 0 0 6px rgba($green-dim, 0.3);
 }
 
 // about section
@@ -114,7 +184,13 @@
 
     &--open {
         color: $green-primary;
+        text-shadow: 0 0 8px rgba($green-primary, 0.4);
     }
+}
+
+.t-about__portraits {
+    display: flex;
+    gap: 1rem;
 }
 
 .t-about__portrait {
@@ -124,12 +200,146 @@
     justify-content: center;
     min-height: 280px;
     background: rgba($green-dim, 0.05);
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    box-shadow: 0 0 15px rgba($green-dim, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.4s ease;
+
+    &:hover {
+        box-shadow: 0 0 25px rgba($green-mid, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.3);
+    }
 }
 
 .t-about__portrait-placeholder {
     color: $green-dim;
     font-size: 0.7rem;
     letter-spacing: 0.1em;
+}
+
+.t-about__portrait-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: invert(1) sepia(1) saturate(4) hue-rotate(70deg) brightness(0.85) contrast(1.2);
+
+    &--gemini {
+        filter: none;
+    }
+}
+
+.t-about__portrait--gemini::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to top, $bg-dark 30%, transparent);
+}
+
+// skills section
+
+.t-skills {
+    margin-bottom: 3rem;
+}
+
+.t-skills__groups {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.t-skills__group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+
+.t-skills__category {
+    color: $green-dim;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-align: center;
+    margin-bottom: 0.25rem;
+    text-shadow: 0 0 6px rgba($green-dim, 0.3);
+}
+
+// ticker
+
+.t-skills__ticker-wrap {
+    overflow: hidden;
+    // escape the scroll container's 2rem padding on both sides
+    margin-left: -2rem;
+    width: calc(100% + 4rem);
+    // fade edges so it looks like it's scrolling into the void
+    mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+.t-skills__ticker-inner {
+    display: flex;
+    width: max-content;
+    // starts paused — JS measures tracks, sets duration, then flips to running
+    animation: ticker-scroll linear infinite;
+    animation-play-state: paused;
+    // GPU-accelerated for buttery smooth scrolling
+    will-change: transform;
+}
+
+.t-skills__ticker-track {
+    display: flex;
+    gap: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    flex-shrink: 0;
+}
+
+// always exactly two identical halves — shifting -50% scrolls one full half off-screen
+// then loops seamlessly because the second half is in the exact same position
+@keyframes ticker-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+}
+
+.t-skills__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid $green-dim;
+    color: $green-mid;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    padding: 0.5rem 1.1rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    background: rgba($green-dim, 0.06);
+    transition: border-color 0.3s, box-shadow 0.3s, color 0.3s;
+
+    &:hover {
+        color: $green-primary;
+        border-color: $green-mid;
+        box-shadow: 0 0 12px rgba($green-mid, 0.25), inset 0 0 12px rgba($green-dim, 0.1);
+    }
+}
+
+.t-skills__icon {
+    width: 18px;
+    height: 18px;
+
+    // local SVGs are black — tint them to match our green palette
+    &--local {
+        filter: invert(68%) sepia(30%) saturate(700%) hue-rotate(60deg) brightness(95%);
+    }
+}
+
+// animations
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
 }
 
 // status bar
@@ -143,12 +353,19 @@
     flex-shrink: 0;
     font-size: 0.7rem;
     letter-spacing: 0.05em;
+    background: rgba($green-dim, 0.03);
 }
 
 .t-statusbar__left {
     display: flex;
     gap: 1.5rem;
     color: $green-mid;
+}
+
+.t-statusbar__online-dot {
+    color: $green-primary;
+    text-shadow: 0 0 6px rgba($green-primary, 0.6);
+    animation: pulse 2s ease-in-out infinite;
 }
 
 .t-statusbar__build {
@@ -160,10 +377,12 @@
     letter-spacing: 0.08em;
     padding: 0.25rem 0.75rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s;
 
     &:hover {
         color: $green-primary;
         border-color: $green-primary;
+        box-shadow: 0 0 10px rgba($green-primary, 0.2);
+        text-shadow: 0 0 8px rgba($green-primary, 0.4);
     }
 }

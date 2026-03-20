@@ -28,6 +28,12 @@ button {
   cursor: pointer;
 }
 
+// themed text selection
+::selection {
+  background: rgba($green-primary, 0.3);
+  color: $green-primary;
+}
+
 // Page layer system this keeps all 4 modes of our website active.  
 .page {
   position: fixed;

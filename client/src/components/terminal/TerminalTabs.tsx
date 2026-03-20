@@ -1,4 +1,4 @@
-import turtle from '../../assets/turtle-removebg-preview.png'
+import treeVideo from '../../assets/mascot-tree.mp4'
 
 type Props = {
     tabs: string[]
@@ -12,7 +12,16 @@ function TerminalTabs({ tabs }: Props) {
                     {tab}
                 </button>
             ))}
-            <img src={turtle} alt="" className="t-tabs__turtle" />
+            <div className="t-tabs__mascot">
+                <video
+                    src={treeVideo}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="t-tabs__mascot-video"
+                />
+            </div>
         </nav>
     )
 }
