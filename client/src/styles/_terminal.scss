@@ -131,7 +131,8 @@
 .t-hero__ws-logo {
     width: 20px;
     height: 20px;
-    filter: invert(68%) sepia(30%) saturate(700%) hue-rotate(60deg) brightness(95%);
+    // SVG is white — invert to black first, then tint green
+    filter: invert(1) invert(68%) sepia(30%) saturate(700%) hue-rotate(60deg) brightness(95%);
 }
 
 // shared section header

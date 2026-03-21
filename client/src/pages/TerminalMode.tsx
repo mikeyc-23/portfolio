@@ -15,8 +15,8 @@ function TerminalMode() {
                     <h1 className="t-hero__name">Meet Mikey</h1>
                     <p className="t-hero__tagline">developer &middot; builder &middot; nerd</p>
                     <p className="t-hero__role">
-                        <img src={wsLogo} alt="" className="t-hero__ws-logo" />
                         Senior Specialist, Knowledge Operations &amp; Tools @ Wealthsimple
+                        <img src={wsLogo} alt="" className="t-hero__ws-logo" />
                     </p>
                 </header>
                 <TerminalAbout />
