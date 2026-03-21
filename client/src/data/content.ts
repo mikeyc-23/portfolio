@@ -8,26 +8,26 @@ export const projects = [
         name: 'InStock',
         stack: ['React', 'Node.js', 'Express', 'MySQL'],
         description: 'Inventory management system built with a team during an agile sprint.',
-        githubUrl: 'https://github.com/mikeyc-23/InStock-Frontend-Funky-Flamingos',
-        githubBackendUrl: null,
+        githubUrl: 'https://github.com/mikeyc-23/InStockFrontEnd',
+        githubBackendUrl: 'https://github.com/mikeyc-23/InStockBackEnd',
         liveUrl: null,
         featured: true,
     },
-    // ⚠️ REMOVE BEFORE LAUNCH — TD intellectual property. Do not publish.
+ 
     {
         id: 'simplan',
         name: 'CAN-SIMPLAN',
-        stack: ['React 19', 'SCSS', 'Node.js', 'Express', 'MySQL', 'JWT'],
-        description: 'Simulation-driven decision platform for Mississauga urban planners, built for TD Bank Industry Sprint.',
+        stack: ['React', 'SCSS', 'Node.js', 'Express', 'MySQL', 'JWT'],
+        description: 'A mock simulation-driven decision platform for Mississauga urban planners.',
         githubUrl: 'https://github.com/mikeyc-23/Industry-Sprint-Front-End',
         githubBackendUrl: 'https://github.com/mikeyc-23/Industry-Sprint-Back-End',
         liveUrl: null,
         featured: true,
     },
-    // ⚠️ REMOVE BEFORE LAUNCH — TD intellectual property. Do not publish.
+   
     {
-        id: 'td-console',
-        name: 'TD Sprint Console',
+        id: 'bt-console',
+        name: 'BT Sprint Console',
         stack: ['HTML', 'SCSS', 'JavaScript', 'Canvas'],
         description: 'Cyberpunk-themed sign-up console with immersive Canvas animations.',
         githubUrl: 'https://github.com/mikeyc-23/IndustrySprint1',

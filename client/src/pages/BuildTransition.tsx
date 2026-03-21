@@ -50,9 +50,9 @@ function BuildTransition({mode, onDone} : Props) {
             setProgress(Math.round((i / sequence.length) * 100))
             if (i >= sequence.length) {
                 clearInterval(interval)
-                setTimeout(onDone, 800)
+                setTimeout(onDone, 600)
             }
-        }, 350)
+        }, 250)
         return () => clearInterval(interval)
     }, [mode])
 

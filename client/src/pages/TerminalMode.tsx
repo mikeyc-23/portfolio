@@ -2,6 +2,7 @@ import TerminalTabs from '../components/terminal/TerminalTabs'
 import TerminalAbout from '../components/terminal/TerminalAbout'
 import TerminalSkills from '../components/terminal/TerminalSkills'
 import TerminalStatusBar from '../components/terminal/TerminalStatusBar'
+import TerminalProjects from '../components/terminal/TerminalProjects'
 import wsLogo from '../assets/icons/wealthsimple.svg'
 
 const tabs = ['SUMMARY', 'ABOUT', 'PROJECTS', 'SKILLS', 'CONTACT']
@@ -21,6 +22,7 @@ function TerminalMode() {
                 </header>
                 <TerminalAbout />
                 <TerminalSkills />
+                <TerminalProjects/>
             </div>
             <TerminalStatusBar />
         </div>
