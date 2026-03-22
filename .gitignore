@@ -37,7 +37,3 @@ BUILD_PLAN.md
 # Visual companion and planning artifacts
 .superpowers/
 docs/superpowers/
-
-# Claude / AI tooling
-.claude.json
-.claude/
