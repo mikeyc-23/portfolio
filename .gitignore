@@ -25,6 +25,8 @@ desktop.ini
 
 # Local scratch/reference assets — not source code
 scratch/
+temp-inspiration/
+portfolio/
 
 # Personal notes — plain English project reference
 notes.md
