@@ -1,5 +1,5 @@
-import { useScrollReveal } from '../../hooks/useScrollReveal'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
+import { ScrollContainerContext } from '../../context/ScrollContainerContext'
 
 const LINES = [
     '> initializing contact protocols...',
@@ -9,51 +9,59 @@ const LINES = [
 ]
 
 function TerminalContact() {
-    const ref = useScrollReveal()
     const sectionRef = useRef<HTMLElement>(null)
+    const scrollRoot = useContext(ScrollContainerContext)
+    const [showBox, setShowBox] = useState(false)
     const [visibleLines, setVisibleLines] = useState(0)
+    const [showAscii, setShowAscii] = useState(false)
     const [showLinks, setShowLinks] = useState(false)
     const [hasTriggered, setHasTriggered] = useState(false)
 
-    // trigger boot sequence only when section scrolls into view
+    // trigger boot sequence when section scrolls into view
     useEffect(() => {
         const el = sectionRef.current
-        if (!el) return
+        if (!el || hasTriggered) return
 
         const observer = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting && !hasTriggered) {
+                if (entry.isIntersecting) {
                     setHasTriggered(true)
-                    observer.unobserve(el)
+                    observer.disconnect()
                 }
             },
-            { threshold: 0.3 }
+            { threshold: 0.1, root: scrollRoot ?? undefined }
         )
 
         observer.observe(el)
         return () => observer.disconnect()
-    }, [hasTriggered])
+    }, [hasTriggered, scrollRoot])
 
-    // run the boot animation after scroll trigger
+    // orchestrated boot sequence
     useEffect(() => {
         if (!hasTriggered) return
         const timers: ReturnType<typeof setTimeout>[] = []
+
+        // 1) border draws in
+        timers.push(setTimeout(() => setShowBox(true), 50))
+
+        // 2) boot lines snap in after box is drawn
+        const bootStart = 650
         LINES.forEach((_, i) => {
-            timers.push(setTimeout(() => setVisibleLines(i + 1), 300 + i * 350))
+            timers.push(setTimeout(() => setVisibleLines(i + 1), bootStart + i * 150))
         })
-        // show links after all boot lines have appeared
-        timers.push(setTimeout(() => setShowLinks(true), 300 + LINES.length * 350 + 200))
+
+        // 3) ASCII header + links appear after boot
+        const bootEnd = bootStart + LINES.length * 150
+        timers.push(setTimeout(() => setShowAscii(true), bootEnd + 100))
+        timers.push(setTimeout(() => setShowLinks(true), bootEnd + 250))
+
         return () => timers.forEach(clearTimeout)
     }, [hasTriggered])
 
     return (
-        <section className="t-contact" id="contact" ref={(node) => {
-            // combine both refs
-            (ref as React.MutableRefObject<HTMLElement | null>).current = node;
-            (sectionRef as React.MutableRefObject<HTMLElement | null>).current = node;
-        }}>
-            <h2 className="t-section__header">// 04 — CONTACT</h2>
-            <div className="t-contact__terminal">
+        <section className="t-contact" id="contact" ref={sectionRef}>
+            <h2 className="t-section__header">// 05 — CONTACT</h2>
+            <div className={`t-contact__terminal${showBox ? ' t-contact__terminal--visible' : ''}`}>
                 <div className="t-contact__boot">
                     {LINES.map((line, i) => (
                         <p
@@ -65,7 +73,7 @@ function TerminalContact() {
                     ))}
                 </div>
 
-                <pre className="t-contact__ascii">
+                <pre className={`t-contact__ascii${showAscii ? ' t-contact__ascii--visible' : ''}`}>
 {`╔══════════════════════════════════════╗
 ║  OUTBOUND TRANSMISSION CHANNELS     ║
 ╚══════════════════════════════════════╝`}
@@ -101,9 +109,11 @@ function TerminalContact() {
                     </a>
                 </div>
 
-                <p className={`t-contact__footer ${showLinks ? 't-contact__footer--visible' : ''}`}>
-                    &gt; select a channel to transmit
-                </p>
+                <div className={`t-contact__footer ${showLinks ? 't-contact__footer--visible' : ''}`}>
+                    <span className="t-contact__prompt">mikey@portfolio:~$</span>
+                    <span>ready for transmission</span>
+                    <span className="t-contact__blink">_</span>
+                </div>
             </div>
         </section>
     )

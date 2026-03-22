@@ -7,9 +7,9 @@ function TerminalStatusBar() {
                 <span>MAIN</span>
                 <span>TORONTO</span>
             </div>
-            <button className="t-statusbar__build">
-                BUILD LIGHT MODE
-            </button>
+            <span className="t-statusbar__build">
+                COMING SOON
+            </span>
         </div>
     )
 }

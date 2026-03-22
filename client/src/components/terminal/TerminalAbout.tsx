@@ -1,8 +1,28 @@
+import { useState, useEffect } from 'react'
 import geminiPortrait from '../../assets/portrait-studio.png'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 
+const FACE_MSG = '> Hey, why are you clicking my face and not my contact links!'
+
 function TerminalAbout() {
     const ref = useScrollReveal()
+    const [faceClicked, setFaceClicked] = useState(false)
+    const [typedText, setTypedText] = useState('')
+
+    useEffect(() => {
+        if (!faceClicked) {
+            setTypedText('')
+            return
+        }
+        let i = 0
+        const interval = setInterval(() => {
+            i++
+            setTypedText(FACE_MSG.slice(0, i))
+            if (i >= FACE_MSG.length) clearInterval(interval)
+        }, 40)
+        const hideTimeout = setTimeout(() => setFaceClicked(false), 10000)
+        return () => { clearInterval(interval); clearTimeout(hideTimeout) }
+    }, [faceClicked])
     return (
         <section className="t-about" id="about" ref={ref}>
             <h2 className="t-section__header">// 01 — ABOUT</h2>
@@ -43,11 +63,21 @@ function TerminalAbout() {
                     </div>
                 </div>
                 <div className="t-about__portraits">
-                    <div className="t-about__portrait t-about__portrait--gemini">
+                    <div
+                        className="t-about__portrait t-about__portrait--gemini"
+                        onClick={() => setFaceClicked(true)}
+                        style={{ cursor: 'pointer' }}
+                    >
                         <img src={geminiPortrait} alt="portrait" className="t-about__portrait-img t-about__portrait-img--gemini" />
                     </div>
                 </div>
             </div>
+            {faceClicked && (
+                <p className="t-about__face-msg">
+                    {typedText}
+                    <span className="t-about__face-cursor">_</span>
+                </p>
+            )}
         </section>
     )
 }

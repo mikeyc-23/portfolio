@@ -6,24 +6,12 @@ import EntryScreen from "./pages/EntryScreen"
 import TerminalMode from "./pages/TerminalMode"
 
 function App() {
-    const [mode, setMode] = useState('entry')       // which mode was selected
-    const [isLoading, setIsLoading] = useState(false)
-    const [page, setPage] = useState('entry')       // which page is currently showing
+    const [page, setPage] = useState<'entry' | 'loading' | 'terminal'>('entry')
 
-    function handleSelect(selected: string) {
-        setMode(selected)
-        setIsLoading(true)
-    }
-
-    function handleDone() {
-        setIsLoading(false)
-        setPage(mode)   // land on whichever mode was selected
-    }
-
-    if (isLoading) return <BuildTransition mode={mode} onDone={handleDone} />
+    if (page === 'loading') return <BuildTransition mode="terminal" onDone={() => setPage('terminal')} />
     if (page === 'terminal') return <TerminalMode />
 
-    return <EntryScreen onSelect={handleSelect} />
+    return <EntryScreen onSelect={() => setPage('loading')} />
 }
 
 export default App

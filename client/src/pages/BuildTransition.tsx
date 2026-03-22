@@ -54,7 +54,7 @@ function BuildTransition({mode, onDone} : Props) {
             }
         }, 250)
         return () => clearInterval(interval)
-    }, [mode])
+    }, [mode, onDone])
 
     return (
         <div className="page b-build">

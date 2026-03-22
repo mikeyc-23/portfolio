@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import MatrixRain from '../components/MatrixRain'
 
 type Props = {
-    onSelect: (value:string) => void
+    onSelect: () => void
 }
 
 function EntryScreen({ onSelect }: Props) {
@@ -36,11 +36,10 @@ function EntryScreen({ onSelect }: Props) {
                 <h1 className="e-entry__title">
                     {displayName}<span className="e-entry__cursor">{showCursor ? '_' : '\u00A0'}</span>
                 </h1>
-                <p className="e-entry__subtitle">Who are you?</p>
-                    <div className="e-entry__buttons">   
-                        <button className="e-entry__btn" onClick={()=>onSelect('terminal')}>Developer</button>
-                        <button className="e-entry__btn" onClick={()=>onSelect('light')}>Recruiter</button>
-                    </div>
+                <p className="e-entry__subtitle">welcome to my portfolio</p>
+                <div className="e-entry__buttons">
+                    <button className="e-entry__btn" onClick={onSelect}>Enter</button>
+                </div>
             </div>
         </div>
     )

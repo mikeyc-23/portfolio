@@ -1,7 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useContext } from 'react'
+import { ScrollContainerContext } from '../context/ScrollContainerContext'
 
 export function useScrollReveal() {
     const ref = useRef<HTMLElement>(null)
+    const root = useContext(ScrollContainerContext)
 
     useEffect(() => {
         const el = ref.current
@@ -19,12 +21,12 @@ export function useScrollReveal() {
                     observer.unobserve(el)
                 }
             },
-            { threshold: 0.15 }
+            { threshold: 0.15, root: root ?? undefined }
         )
 
         observer.observe(el)
         return () => observer.disconnect()
-    }, [])
+    }, [root])
 
     return ref
 }
