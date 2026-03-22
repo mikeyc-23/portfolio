@@ -1,17 +1,26 @@
 import geminiPortrait from '../../assets/portrait-studio.png'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
 
 function TerminalAbout() {
+    const ref = useScrollReveal()
     return (
-        <section className="t-about" id="about">
+        <section className="t-about" id="about" ref={ref}>
             <h2 className="t-section__header">// 01 — ABOUT</h2>
             <div className="t-about__body">
                 <div className="t-about__text">
-                    <p className="t-about__bio">
-                        [ My name is Michael but you can call me Mikey for short, welcome to my portfolio!
-                            I love nature, and technology and this is where I show case my projects as well
-                            as some updates on things near and dear to me! This side of my portfolio is less
-                            serious and more fun and creative, hope you like what you see! ]
-                    </p>
+                    <div className="t-about__bio-wrap">
+                        <p className="t-about__bio">
+                            [ Hey, I'm Mikey. I studied psychology at York, got hooked on building things,
+                                and landed at Wealthsimple, where I went from helping clients directly to
+                                shaping the knowledge and content systems that power the entire Client Experience
+                                team. I build tools, design workflows, and make sure information works for both
+                                humans and AI. Now I'm learning to code the solutions I used to spec out.
+                                This portfolio is where I showcase my projects, passions, and everything
+                                I'm building along the way. When I'm not at a keyboard for work, I'm probably
+                                at a keyboard learning something new, or hiking, cooking, reading, and
+                                spending time with friends. ]
+                        </p>
+                    </div>
                     <div className="t-about__meta">
                         <span className="t-about__meta-label">EDUCATION</span>
                         <span className="t-about__meta-value">BrainStation · Software Engineering · 2026</span>
@@ -21,6 +30,16 @@ function TerminalAbout() {
                         <span className="t-about__meta-value">Toronto, ON</span>
                         <span className="t-about__meta-label">STATUS</span>
                         <span className="t-about__meta-value t-about__meta-value--open">● Employed Full Time</span>
+                    </div>
+                    <div className="t-about__interests">
+                        <span className="t-about__interests-label">INTERESTS</span>
+                        <div className="t-about__interests-tags">
+                            <span className="t-about__interest">hiking</span>
+                            <span className="t-about__interest">cooking</span>
+                            <span className="t-about__interest">reading</span>
+                            <span className="t-about__interest">AI tooling</span>
+                            <span className="t-about__interest">learning</span>
+                        </div>
                     </div>
                 </div>
                 <div className="t-about__portraits">

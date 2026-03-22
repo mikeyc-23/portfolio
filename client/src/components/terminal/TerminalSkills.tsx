@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { skillGroups } from '../../data/content'
+import { useScrollReveal } from '../../hooks/useScrollReveal'
 
 const ICON_COLOR = '8ac860'
 const SPEED = 40 // pixels per second — consistent across all rows
@@ -40,7 +41,7 @@ function TerminalSkills() {
             const trackW = track.offsetWidth
             const viewW = wrap.offsetWidth
             // each half needs to be at least as wide as the viewport for seamless scroll
-            return Math.max(1, Math.ceil(viewW / trackW))
+            return Math.max(2, Math.ceil(viewW / trackW) + 1)
         })
         setRepeats(r)
     }, [])
@@ -62,9 +63,10 @@ function TerminalSkills() {
     }, [repeats])
 
     const getRepeats = (gi: number) => repeats[gi] || 1
+    const scrollRef = useScrollReveal()
 
     return (
-        <section className="t-skills" id="skills">
+        <section className="t-skills" id="skills" ref={scrollRef}>
             <h2 className="t-section__header">// 02 — SKILLS</h2>
             <div className="t-skills__groups">
                 {skillGroups.map((group, gi) => (

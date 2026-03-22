@@ -8,7 +8,14 @@ function TerminalTabs({ tabs }: Props) {
     return (
         <nav className="t-tabs">
             {tabs.map(tab => (
-                <button key={tab} className="t-tabs__tab">
+                <button 
+                    key={tab} 
+                    className="t-tabs__tab"
+                    onClick={() => {
+                        const el = document.getElementById(tab.toLowerCase())
+                        el?.scrollIntoView({behavior: 'smooth'})
+                    }}
+                    >
                     {tab}
                 </button>
             ))}

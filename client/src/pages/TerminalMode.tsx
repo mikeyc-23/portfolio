@@ -4,15 +4,16 @@ import TerminalSkills from '../components/terminal/TerminalSkills'
 import TerminalStatusBar from '../components/terminal/TerminalStatusBar'
 import TerminalProjects from '../components/terminal/TerminalProjects'
 import wsLogo from '../assets/icons/wealthsimple.svg'
+import TerminalContact from '../components/terminal/TerminalContact'
 
-const tabs = ['SUMMARY', 'ABOUT', 'PROJECTS', 'SKILLS', 'CONTACT']
+const tabs = ['SUMMARY', 'ABOUT', 'SKILLS', 'PROJECTS', 'CONTACT', 'BLOG']
 
 function TerminalMode() {
     return (
         <div className="page t-terminal">
             <TerminalTabs tabs={tabs} />
             <div className="t-terminal__scroll">
-                <header className="t-hero">
+                <header className="t-hero" id="summary">
                     <h1 className="t-hero__name">Meet Mikey</h1>
                     <p className="t-hero__tagline">developer &middot; builder &middot; nerd</p>
                     <p className="t-hero__role">
@@ -23,6 +24,7 @@ function TerminalMode() {
                 <TerminalAbout />
                 <TerminalSkills />
                 <TerminalProjects/>
+                <TerminalContact/>
             </div>
             <TerminalStatusBar />
         </div>
