@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Design Directions</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #1a1a2e;
+    color: #eee;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  h1 {
+    text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .direction {
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+  }
+  .direction:hover { transform: translateY(-2px); }
+  .direction.selected { border-color: #7c6cf0; }
+
+  .dir-label {
+    text-align: center;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 0.6rem;
+    background: #111;
+    color: #888;
+  }
+  .direction.selected .dir-label { color: #7c6cf0; }
+
+  /* ─── DARK MODE MOCKUP ─── */
+  .dark-mock {
+    background: #0d0d0d;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 1.5rem;
+    min-height: 420px;
+    border-top: 1px solid #222;
+  }
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 1.2rem;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #febc2e; }
+  .dot.g { background: #28c840; }
+  .terminal-title {
+    font-size: 0.7rem;
+    color: #444;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .ascii-photo {
+    color: #33ff33;
+    font-size: 0.52rem;
+    line-height: 1.1;
+    letter-spacing: 0.05em;
+    text-align: center;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 6px #0f0;
+    white-space: pre;
+  }
+  .terminal-line {
+    color: #33ff33;
+    font-size: 0.75rem;
+    margin-bottom: 0.3rem;
+    text-shadow: 0 0 4px #0a0;
+  }
+  .terminal-line .prompt { color: #00cc00; }
+  .terminal-line .cmd { color: #fff; }
+  .terminal-line .output { color: #5af; }
+  .terminal-line .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 13px;
+    background: #33ff33;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .dark-nav {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid #222;
+    font-size: 0.7rem;
+    color: #33ff33;
+  }
+  .dark-nav span { opacity: 0.6; }
+  .dark-nav span:first-child { opacity: 1; }
+
+  /* ─── LIGHT MODE MOCKUP ─── */
+  .light-mock {
+    background: #fff;
+    min-height: 420px;
+    border-top: 1px solid #eee;
+    overflow: hidden;
+    position: relative;
+  }
+  .light-hero {
+    background: linear-gradient(135deg, #6c63ff 0%, #ff6584 50%, #43e97b 100%);
+    padding: 2rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(30px);
+    opacity: 0.5;
+  }
+  .blob1 { width: 120px; height: 120px; background: #ff6584; top: -20px; right: 20px; }
+  .blob2 { width: 80px; height: 80px; background: #43e97b; bottom: 10px; left: 40px; }
+  .blob3 { width: 60px; height: 60px; background: #6c63ff; top: 30px; left: 10px; }
+  .light-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .light-role {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.85);
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.08em;
+  }
+  .light-avatar-3d {
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, #fff3, #fff8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-top: 1rem;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .light-body {
+    padding: 1.2rem 1.5rem;
+  }
+  .light-section-title {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #999;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .skill-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+  .chip {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .chip.r { background: linear-gradient(90deg, #6c63ff, #a78bfa); }
+  .chip.g { background: linear-gradient(90deg, #43e97b, #38f9d7); }
+  .chip.o { background: linear-gradient(90deg, #ff6584, #ffa07a); }
+  .chip.b { background: linear-gradient(90deg, #00c6fb, #005bea); }
+
+  .project-card {
+    background: #f8f8ff;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border: 1px solid #ede9fe;
+  }
+  .proj-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .proj-icon.p1 { background: linear-gradient(135deg, #6c63ff, #a78bfa); }
+  .proj-icon.p2 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+  .proj-name { font-size: 0.75rem; font-weight: 700; color: #333; }
+  .proj-tech { font-size: 0.6rem; color: #888; }
+  .light-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.8rem 0;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 0.8rem;
+  }
+  .light-nav span {
+    font-size: 0.65rem;
+    color: #aaa;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .light-nav span.active { color: #6c63ff; }
+
+  .selection-hint {
+    text-align: center;
+    color: #555;
+    font-size: 0.8rem;
+    margin-top: 1.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+</head>
+<body>
+<h1>Two Design Directions</h1>
+<p class="subtitle">Both would have a toggle to switch between them — click each one to select it</p>
+
+<div class="split">
+
+  <!-- DARK / TERMINAL -->
+  <div class="direction" onclick="pick(this, 'dark-terminal')" data-choice="dark-terminal">
+    <div class="dir-label">Dark Mode — Terminal / Console</div>
+    <div class="dark-mock">
+      <div class="terminal-bar">
+        <div class="dot r"></div>
+        <div class="dot y"></div>
+        <div class="dot g"></div>
+        <div class="terminal-title">mikey@portfolio ~ $</div>
+      </div>
+      <div class="ascii-photo">
+  ██████████████████████████████████████
+  ██ ..'''.. ██ Michael Corrado        ██
+  ██ .(..).. ██ Software Engineer     ██
+  ██ ..\_/.. ██ &gt; ./about-me         ██
+  ██ ..|.|.. ██ &gt; ./projects         ██
+  ██ ../.\.. ██ &gt; ./contact         ██
+  ██████████████████████████████████████</div>
+      <div class="terminal-line"><span class="prompt">mikey@portfolio:~$</span> <span class="cmd">whoami</span></div>
+      <div class="terminal-line"><span class="output">Full-Stack Software Engineer | BrainStation '25</span></div>
+      <div class="terminal-line"><span class="prompt">mikey@portfolio:~$</span> <span class="cmd">ls ./skills</span></div>
+      <div class="terminal-line"><span class="output">React  Node.js  Express  MySQL  Git</span></div>
+      <div class="terminal-line"><span class="prompt">mikey@portfolio:~$</span> <span class="cursor"></span></div>
+      <div class="dark-nav">
+        <span>~/home</span>
+        <span>~/projects</span>
+        <span>~/about</span>
+        <span>~/contact</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIGHT / VIBRANT -->
+  <div class="direction" onclick="pick(this, 'light-vibrant')" data-choice="light-vibrant">
+    <div class="dir-label">Light Mode — Colourful & Vibrant</div>
+    <div class="light-mock">
+      <div class="light-hero">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
+        <div class="light-avatar-3d">👨‍💻</div>
+        <div class="light-name" style="margin-top:0.5rem">Michael Corrado</div>
+        <div class="light-role">Software Engineer · BrainStation '25</div>
+      </div>
+      <div class="light-body">
+        <div class="light-section-title">Tech Stack</div>
+        <div class="skill-chips">
+          <div class="chip r">React</div>
+          <div class="chip g">Node.js</div>
+          <div class="chip o">Express</div>
+          <div class="chip b">MySQL</div>
+          <div class="chip r">TypeScript</div>
+        </div>
+        <div class="light-section-title">Featured Projects</div>
+        <div class="project-card">
+          <div class="proj-icon p1">📦</div>
+          <div>
+            <div class="proj-name">InStock</div>
+            <div class="proj-tech">React · Node · Express · MySQL</div>
+          </div>
+        </div>
+      </div>
+      <div class="light-nav">
+        <span class="active">Home</span>
+        <span>Projects</span>
+        <span>About</span>
+        <span>Contact</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="selection-hint">These are rough directions — not final designs. The goal is to see which visual language resonates. You can pick one, both, or tell me what feels off.</p>
+
+<script>
+  let selected = new Set();
+  function pick(el, choice) {
+    el.classList.toggle('selected');
+    if (selected.has(choice)) selected.delete(choice);
+    else selected.add(choice);
+
+    // record for events file
+    try {
+      const ev = { type: 'click', choice, text: el.querySelector('.dir-label').textContent.trim(), timestamp: Date.now() };
+      fetch('/.record-event', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(ev) }).catch(()=>{});
+    } catch(e) {}
+  }
+</script>
+</body>
+</html>

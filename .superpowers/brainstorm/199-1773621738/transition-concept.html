@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Concept Demo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* ─── SHARED ─── */
+  body { overflow: hidden; height: 100vh; width: 100vw; }
+
+  /* ─── TERMINAL MODE ─── */
+  #terminal-mode {
+    position: absolute; inset: 0;
+    background: #0d0d0d;
+    font-family: 'Courier New', Courier, monospace;
+    color: #33ff33;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    transition: opacity 0.3s;
+  }
+  .term-bar {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 1.5rem;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; } .dot.y { background: #febc2e; } .dot.g { background: #28c840; }
+  .term-title { color: #444; font-size: 0.75rem; margin: 0 auto; }
+
+  .ascii-art {
+    font-size: 0.48rem;
+    line-height: 1.15;
+    color: #33ff33;
+    text-shadow: 0 0 6px #0f04;
+    white-space: pre;
+    margin-bottom: 1.2rem;
+    text-align: center;
+  }
+
+  .term-body { flex: 1; display: flex; flex-direction: column; }
+  .term-line { font-size: 0.82rem; margin-bottom: 0.25rem; line-height: 1.4; }
+  .prompt { color: #00cc00; }
+  .cmd { color: #ffffff; }
+  .out { color: #5af; }
+  .dim { color: #555; }
+  .hint { color: #666; font-size: 0.72rem; margin-top: 0.5rem; }
+
+  .input-row {
+    display: flex; align-items: center; gap: 0.4rem; margin-top: 1rem;
+  }
+  #term-input {
+    background: transparent; border: none; outline: none;
+    color: #fff; font-family: inherit; font-size: 0.82rem; flex: 1;
+    caret-color: #33ff33;
+  }
+  .cursor-block {
+    display: inline-block; width: 9px; height: 14px;
+    background: #33ff33; vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .launch-btn {
+    margin-top: 1.5rem; align-self: flex-start;
+    background: transparent; border: 1px solid #33ff33;
+    color: #33ff33; font-family: inherit; font-size: 0.78rem;
+    padding: 0.5rem 1.2rem; cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: background 0.2s, color 0.2s;
+  }
+  .launch-btn:hover { background: #33ff3322; }
+
+  /* ─── BUILD MODE ─── */
+  #build-mode {
+    position: absolute; inset: 0;
+    background: #0d0d0d;
+    font-family: 'Courier New', Courier, monospace;
+    color: #33ff33;
+    padding: 2rem;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #build-log { flex: 1; overflow: hidden; }
+  .build-line {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .build-line.show { opacity: 1; transform: none; }
+  .build-line.ok { color: #33ff33; }
+  .build-line.info { color: #5af; }
+  .build-line.warn { color: #febc2e; }
+  .build-line.done { color: #fff; font-weight: bold; }
+  .progress-bar {
+    height: 3px; background: #1a1a1a; margin: 1rem 0; border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; width: 0%; background: linear-gradient(90deg, #33ff33, #5af);
+    transition: width 0.4s ease;
+  }
+
+  /* ─── STYLED MODE ─── */
+  #styled-mode {
+    position: absolute; inset: 0;
+    background: #fff;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  #styled-mode.visible { opacity: 1; }
+
+  .styled-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    background: #fff;
+  }
+  .styled-logo { font-weight: 800; font-size: 1.1rem; color: #1a1a1a; font-family: system-ui, sans-serif; }
+  .styled-nav-links { display: flex; gap: 1.5rem; }
+  .styled-nav-links a {
+    font-size: 0.8rem; color: #666; text-decoration: none;
+    font-family: system-ui, sans-serif; font-weight: 500;
+  }
+  .toggle-back {
+    font-size: 0.72rem; background: #f5f5f5; border: 1px solid #e0e0e0;
+    color: #555; padding: 0.35rem 0.9rem; border-radius: 20px; cursor: pointer;
+    font-family: system-ui, sans-serif;
+  }
+  .toggle-back:hover { background: #ebe8ff; border-color: #c4b5fd; color: #7c3aed; }
+
+  .styled-hero {
+    background: linear-gradient(135deg, #6c63ff 0%, #a78bfa 40%, #ff6584 80%, #fbbf24 100%);
+    padding: 3rem 2.5rem 2.5rem;
+    display: flex; gap: 2rem; align-items: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-blob {
+    position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.35; pointer-events: none;
+  }
+  .hb1 { width: 200px; height: 200px; background: #fff; top: -50px; right: 5%; }
+  .hb2 { width: 120px; height: 120px; background: #fbbf24; bottom: -30px; left: 30%; }
+
+  .hero-photo {
+    width: 90px; height: 90px; border-radius: 50%;
+    background: linear-gradient(135deg, #fff3, #fff8);
+    border: 3px solid rgba(255,255,255,0.5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; flex-shrink: 0;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    position: relative; z-index: 1;
+  }
+  .hero-text { position: relative; z-index: 1; }
+  .hero-name {
+    font-size: 1.6rem; font-weight: 800; color: #fff;
+    font-family: system-ui, sans-serif;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .hero-role {
+    font-size: 0.85rem; color: rgba(255,255,255,0.85);
+    font-family: system-ui, sans-serif; margin-top: 4px;
+  }
+  .hero-chips { display: flex; gap: 8px; margin-top: 1rem; flex-wrap: wrap; }
+  .hchip {
+    padding: 4px 12px; border-radius: 20px; font-size: 0.7rem;
+    font-weight: 600; color: #fff; background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+    font-family: system-ui, sans-serif;
+    backdrop-filter: blur(4px);
+  }
+
+  .styled-body { padding: 1.5rem 2.5rem; font-family: system-ui, sans-serif; }
+  .section-label {
+    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em;
+    color: #aaa; font-weight: 700; margin-bottom: 1rem;
+  }
+  .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .proj-card {
+    border: 1px solid #ede9fe; border-radius: 12px; padding: 1rem;
+    display: flex; gap: 0.8rem; align-items: flex-start;
+    transition: box-shadow 0.2s;
+  }
+  .proj-card:hover { box-shadow: 0 4px 16px rgba(108,99,255,0.12); }
+  .proj-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+  .pi1 { background: linear-gradient(135deg, #6c63ff, #a78bfa); }
+  .pi2 { background: linear-gradient(135deg, #ff6584, #fbbf24); }
+  .pi3 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+  .pi4 { background: linear-gradient(135deg, #00c6fb, #005bea); }
+  .proj-name { font-size: 0.8rem; font-weight: 700; color: #1a1a1a; }
+  .proj-tech { font-size: 0.65rem; color: #888; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ TERMINAL MODE ═══ -->
+<div id="terminal-mode">
+  <div class="term-bar">
+    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+    <div class="term-title">mikey@portfolio ~ — bash</div>
+  </div>
+
+  <div class="ascii-art">    .,,;;;;;,,,.
+  ,dXMMMMMMMMMMMXb,     ██╗ ██╗ ██╗██╗  ██╗███████╗██╗   ██╗
+ dXMMMMMXXXXXXXXMMMMb   ╚═╝ ╚═╝ ╚═╝╚═╝  ╚═╝╚══════╝╚══╗ ╔═╝
+dMMMMXo'         'oXb  ███╗██╗███╗  █╗█████╗  ██║       ╔╝
+XMMMM              Xb  ╚══╝╚═╝╚══╝ ╚═╝╚════╝  ╚═╝      ╔╝
+XMMMM  (o)   (o)  XM   Michael Corrado ─────────────────╝
+'MMMMX.  ──  .XMMM'    Software Engineer · BrainStation '25
+ 'XMMMMMXXXXMMMMMX'
+   'XMMMMMMMMMMX'      [ type  gui  to switch view ]
+     ';;XXXXXX;;'      [ or click the button below ]</div>
+
+  <div class="term-body">
+    <div class="term-line"><span class="prompt">mikey@portfolio:~$</span> <span class="cmd">cat about.txt</span></div>
+    <div class="term-line out">Full-Stack Software Engineer, BrainStation Graduate 2025.</div>
+    <div class="term-line out">Passionate about building things people actually use.</div>
+    <div class="term-line dim">─────────────────────────────────────────────────</div>
+    <div class="term-line"><span class="prompt">mikey@portfolio:~$</span> <span class="cmd">ls ./projects</span></div>
+    <div class="term-line out">instock/  &nbsp; dream-team-generator/  &nbsp; eventure-backend/</div>
+    <div class="term-line dim">─────────────────────────────────────────────────</div>
+    <div class="input-row">
+      <span class="prompt">mikey@portfolio:~$</span>
+      <input id="term-input" type="text" placeholder="try typing 'gui'" autocomplete="off" spellcheck="false" />
+      <span class="cursor-block"></span>
+    </div>
+    <div class="hint" id="hint-text">hint: type <strong style="color:#33ff33">gui</strong> and press Enter, or click the button</div>
+    <button class="launch-btn" onclick="startBuild()">▶ &nbsp;./switch-to-gui.sh</button>
+  </div>
+</div>
+
+<!-- ═══ BUILD / TRANSITION MODE ═══ -->
+<div id="build-mode">
+  <div class="term-bar">
+    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+    <div class="term-title">mikey@portfolio ~ — building...</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <div id="build-log"></div>
+</div>
+
+<!-- ═══ STYLED MODE ═══ -->
+<div id="styled-mode">
+  <div class="styled-nav">
+    <div class="styled-logo">MC.</div>
+    <div class="styled-nav-links">
+      <a href="#">About</a>
+      <a href="#">Projects</a>
+      <a href="#">Skills</a>
+      <a href="#">Contact</a>
+    </div>
+    <button class="toggle-back" onclick="goBack()">⌨ back to terminal</button>
+  </div>
+  <div class="styled-hero">
+    <div class="hero-blob hb1"></div>
+    <div class="hero-blob hb2"></div>
+    <div class="hero-photo">👨‍💻</div>
+    <div class="hero-text">
+      <div class="hero-name">Michael Corrado</div>
+      <div class="hero-role">Full-Stack Software Engineer · BrainStation '25</div>
+      <div class="hero-chips">
+        <div class="hchip">React</div>
+        <div class="hchip">Node.js</div>
+        <div class="hchip">Express</div>
+        <div class="hchip">MySQL</div>
+        <div class="hchip">TypeScript</div>
+      </div>
+    </div>
+  </div>
+  <div class="styled-body">
+    <div class="section-label">Featured Projects</div>
+    <div class="project-grid">
+      <div class="proj-card">
+        <div class="proj-icon pi1">📦</div>
+        <div><div class="proj-name">InStock</div><div class="proj-tech">React · Node · Express · MySQL</div></div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon pi2">⚽</div>
+        <div><div class="proj-name">Dream Team Generator</div><div class="proj-tech">React · Node · API</div></div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon pi3">🎉</div>
+        <div><div class="proj-name">Eventure</div><div class="proj-tech">Node · Express · MySQL</div></div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-icon pi4">+ more</div>
+        <div><div class="proj-name">More projects</div><div class="proj-tech">See GitHub →</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Terminal input listener
+  document.getElementById('term-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const val = e.target.value.trim().toLowerCase();
+      if (val === 'gui' || val === './gui' || val === 'switch' || val === 'pretty') {
+        startBuild();
+      } else if (val) {
+        document.getElementById('hint-text').innerHTML = `<span style="color:#ff5f57">command not found: ${val}</span> — try <strong style="color:#33ff33">gui</strong>`;
+        e.target.value = '';
+      }
+    }
+  });
+
+  const buildLines = [
+    { text: '$ ./switch-to-gui.sh', cls: 'ok', delay: 0 },
+    { text: '  Initialising build pipeline...', cls: 'info', delay: 300 },
+    { text: '  ✔  Loading design tokens', cls: 'ok', delay: 600 },
+    { text: '  ✔  Compiling React components', cls: 'ok', delay: 950 },
+    { text: '  ✔  Bundling assets (3 chunks, 142kb)', cls: 'ok', delay: 1250 },
+    { text: '  ⚠  Swapping ASCII art for actual face (improvement detected)', cls: 'warn', delay: 1600 },
+    { text: '  ✔  Injecting colour palette', cls: 'ok', delay: 1950 },
+    { text: '  ✔  Applying gradients (the good kind)', cls: 'ok', delay: 2200 },
+    { text: '  ✔  Build complete — 2.4s', cls: 'ok', delay: 2550 },
+    { text: '', cls: 'info', delay: 2800 },
+    { text: '  Launching GUI...', cls: 'done', delay: 3000 },
+  ];
+
+  function startBuild() {
+    document.getElementById('terminal-mode').style.opacity = '0';
+    document.getElementById('terminal-mode').style.pointerEvents = 'none';
+    setTimeout(() => {
+      document.getElementById('terminal-mode').style.display = 'none';
+      const bm = document.getElementById('build-mode');
+      bm.style.display = 'flex';
+      runBuild();
+    }, 300);
+  }
+
+  function runBuild() {
+    const log = document.getElementById('build-log');
+    const prog = document.getElementById('progress');
+    buildLines.forEach((item, i) => {
+      setTimeout(() => {
+        const line = document.createElement('div');
+        line.className = 'build-line ' + item.cls;
+        line.textContent = item.text;
+        log.appendChild(line);
+        requestAnimationFrame(() => requestAnimationFrame(() => line.classList.add('show')));
+        prog.style.width = `${Math.round(((i + 1) / buildLines.length) * 100)}%`;
+        if (i === buildLines.length - 1) {
+          setTimeout(showStyled, 700);
+        }
+      }, item.delay);
+    });
+  }
+
+  function showStyled() {
+    document.getElementById('build-mode').style.display = 'none';
+    const sm = document.getElementById('styled-mode');
+    sm.style.display = 'flex';
+    sm.style.flexDirection = 'column';
+    requestAnimationFrame(() => requestAnimationFrame(() => sm.classList.add('visible')));
+  }
+
+  function goBack() {
+    const sm = document.getElementById('styled-mode');
+    sm.classList.remove('visible');
+    setTimeout(() => {
+      sm.style.display = 'none';
+      const tm = document.getElementById('terminal-mode');
+      tm.style.display = 'flex';
+      tm.style.opacity = '0';
+      tm.style.pointerEvents = 'auto';
+      requestAnimationFrame(() => requestAnimationFrame(() => tm.style.opacity = '1'));
+      document.getElementById('term-input').value = '';
+      document.getElementById('hint-text').innerHTML = 'hint: type <strong style="color:#33ff33">gui</strong> and press Enter, or click the button';
+      document.getElementById('build-log').innerHTML = '';
+      document.getElementById('progress').style.width = '0%';
+    }, 500);
+  }
+</script>
+</body>
+</html>
