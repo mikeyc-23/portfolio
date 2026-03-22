@@ -443,12 +443,50 @@
     padding: 1.25rem;
     background: rgba(0, 0, 0, 0.5);
     transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    display: flex;
+    flex-direction: column;
 
     &:hover {
         border-color: $green-mid;
         box-shadow: 0 0 20px rgba($green-primary, 0.15), inset 0 0 20px rgba($green-primary, 0.05);
         transform: translateY(-4px);
     }
+
+    &:hover .t-projects__preview-img {
+        transform: scale(1.05);
+        filter: brightness(1) saturate(1);
+    }
+}
+.t-projects__preview {
+    width: calc(100% + 2.5rem);
+    height: 220px;
+    overflow: hidden;
+    margin: -1.25rem -1.25rem 1rem -1.25rem;
+    border-bottom: 1px solid $green-dim;
+    position: relative;
+
+    // CRT scanline overlay
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+            to bottom,
+            transparent,
+            transparent 2px,
+            rgba(0, 0, 0, 0.15) 2px,
+            rgba(0, 0, 0, 0.15) 4px
+        );
+        pointer-events: none;
+    }
+}
+.t-projects__preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    filter: brightness(0.7) saturate(0.5) sepia(0.3) hue-rotate(70deg);
+    transition: transform 0.4s ease, filter 0.4s ease;
 }
 .t-projects__name {
     color: $green-primary;
@@ -476,6 +514,9 @@
 .t-projects__links {
     display: flex;
     gap: 1rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba($green-dim, 0.3);
 }
 .t-projects__link {
     color: $green-primary;

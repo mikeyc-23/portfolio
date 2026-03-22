@@ -9,6 +9,11 @@ function TerminalProjects () {
             <div className="t-projects__grid">
                 {projects.map(project => (
                     <div key={project.id} className="t-projects__card">
+                        {project.image && (
+                            <div className="t-projects__preview">
+                                <img src={project.image} alt={project.name} className="t-projects__preview-img" />
+                            </div>
+                        )}
                         <h3 className="t-projects__name">{project.name}</h3>
                         <p className="t-projects__desc">{project.description}</p>
                         <div className="t-projects__stack">
@@ -19,7 +24,7 @@ function TerminalProjects () {
                         <div className="t-projects__links">
                             {project.githubUrl && (
                                 <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="t-projects__link">
-                                    Github
+                                    Frontend
                                 </a>
                             )}
                             {project.githubBackendUrl && (
@@ -29,7 +34,7 @@ function TerminalProjects () {
                             )}
                             {project.liveUrl && (
                                 <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="t-projects__link">
-                                    Live Demo 
+                                    Live Demo
                                 </a>
                             )}
                         </div>

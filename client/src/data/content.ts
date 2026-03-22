@@ -1,6 +1,9 @@
 import slackIcon from '../assets/icons/slack.svg'
 import sourcegraphIcon from '../assets/icons/sourcegraph.svg'
 import presetIcon from '../assets/icons/preset.svg'
+import instockPreview from '../assets/instock-preview.png'
+import simplanPreview from '../assets/simplan-preview.png'
+import btConsolePreview from '../assets/bt-console-preview.png'
 
 export const projects = [
     {
@@ -8,28 +11,31 @@ export const projects = [
         name: 'InStock',
         stack: ['React', 'Node.js', 'Express', 'MySQL'],
         description: 'Inventory management system built with a team during an agile sprint.',
+        image: instockPreview,
         githubUrl: 'https://github.com/mikeyc-23/InStockFrontEnd',
         githubBackendUrl: 'https://github.com/mikeyc-23/InStockBackEnd',
         liveUrl: null,
         featured: true,
     },
- 
+
     {
         id: 'simplan',
         name: 'CAN-SIMPLAN',
         stack: ['React', 'SCSS', 'Node.js', 'Express', 'MySQL', 'JWT'],
         description: 'A mock simulation-driven decision platform for Mississauga urban planners.',
+        image: simplanPreview,
         githubUrl: 'https://github.com/mikeyc-23/Industry-Sprint-Front-End',
         githubBackendUrl: 'https://github.com/mikeyc-23/Industry-Sprint-Back-End',
         liveUrl: null,
         featured: true,
     },
-   
+
     {
         id: 'bt-console',
         name: 'BT Sprint Console',
         stack: ['HTML', 'SCSS', 'JavaScript', 'Canvas'],
         description: 'Cyberpunk-themed sign-up console with immersive Canvas animations.',
+        image: btConsolePreview,
         githubUrl: 'https://github.com/mikeyc-23/IndustrySprint1',
         githubBackendUrl: null,
         liveUrl: null,

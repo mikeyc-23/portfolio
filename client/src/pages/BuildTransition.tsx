@@ -71,7 +71,7 @@ function BuildTransition({mode, onDone} : Props) {
                 </div>
                 <div className="b-build__meta">
                     <p className="b-build__meta-name">mikey.exe v1.0.0</p>
-                    <p className="b-build__meta-item">Model: Sonnet 4.6 · Max ∞</p>
+                    <p className="b-build__meta-item">build: stable · status: ready</p>
                     <p className="b-build__meta-item">/users/mikey/code/portfolio</p>
                     <p className="b-build__meta-item">Vibes: immaculate</p>
                 </div>
