@@ -4,6 +4,7 @@ import presetIcon from '../assets/icons/preset.svg'
 import instockPreview from '../assets/instock-preview.png'
 import simplanPreview from '../assets/simplan-preview.png'
 import btConsolePreview from '../assets/bt-console-preview.png'
+import voidVideo from '../assets/void.mp4'
 
 export const projects = [
     {
@@ -94,75 +95,12 @@ export const contact = {
 
 export const blogPosts = [
     {
-        id: 'why-i-code',
-        title: '[Coming Soon]',
-        date: '2026-03-22',
-        tags: ['learning', 'career'],
-        preview: '[Coming Soon]',
-        body: 'Full post coming soon...',
-    },
-    {
-        id: 'claude-code-workflow',
-        title: '[Coming Soon]',
-        date: '2026-03-18',
-        tags: ['AI tooling', 'workflow'],
-        preview: '[Coming Soon]',
-        body: 'Full post coming soon...',
-    },
-    {
-        id: 'building-this-portfolio',
-        title: '[Coming Soon]',
-        date: '2026-03-10',
-        tags: ['projects', 'design'],
-        preview: '[Coming Soon]',
-        body: 'Full post coming soon...',
-    },
-    {
-        id: 'knowledge-systems',
-        title: '[Coming Soon]',
-        date: '2026-02-28',
-        tags: ['career', 'systems thinking'],
-        preview: '[Coming Soon]',
-        body: 'Full post coming soon...',
-    },
-    {
-        id: 'psychology-to-tech',
-        title: '[Coming Soon]',
-        date: '2026-02-15',
-        tags: ['career', 'learning'],
-        preview: '[Coming Soon]',
-        body: 'Full post coming soon...',
-    },
-    {
-        id: 'react-mental-model',
-        title: '[Coming Soon]',
-        date: '2026-02-01',
-        tags: ['learning', 'projects'],
-        preview: '[Coming Soon]',
-        body: 'Full post coming soon...',
-    },
-    {
-        id: 'hiking-and-debugging',
-        title: '[Coming Soon]',
-        date: '2026-01-20',
-        tags: ['life', 'learning'],
-        preview: '[Coming Soon]',
-        body: 'Full post coming soon...',
-    },
-    {
-        id: 'ai-at-work',
-        title: '[Coming Soon]',
-        date: '2026-01-10',
-        tags: ['AI tooling', 'career'],
-        preview: '[Coming Soon]',
-        body: 'Full post coming soon...',
-    },
-    {
-        id: 'first-hackathon',
-        title: '[Coming Soon]',
-        date: '2025-12-15',
-        tags: ['projects', 'learning'],
-        preview: '[Coming Soon]',
-        body: 'Full post coming soon...',
+        id: 'life',
+        title: 'hello world',
+        date: '2026-03-30',
+        tags: ['the void', 'technology'],
+        preview: 'The world is crazy, but so are we.',
+        video: voidVideo,
+        body: "Growing up around technology I don't think I ever truly knew just how much it would control my life and the lives of all of those around me. I still remember the first video games I grew up playing with my brother. From Mario Kart, 007, and Kirby Air Ride, I was genuinely excited each day to get home and play more. As time evolved so did technology, so did the games we played and the devices that powered and delivered them. Our TVs got larger, got slimmer, and stopped making that nostalgic ringing sound just from being powered on. Fast forward and devices we put in our pockets today could theoretically run every game we played in the good old days, but is that a good thing? Just because we can, should we?\n\nToday every game, every TV, and every piece of software and hardware feels the same and I find myself never asking how it actually works anymore. The magic seems to be gone, the nostalgia replaced with convenience and short term dopamine rushes. Rarely these days does a game truly wow me, rarely these days do I look forward to looking at more pixels on my screen. Technology seems to have been sucked of its magic. Today everyone is an expert in the same technologies they once ridiculed, but do people truly enjoy these marvels or do they simply play the part to get the job or fit in with society?\n\nWith the emergence of AI, I feel this 10x more. AI once seemed cool, it seemed like a technology that would project humans into the future, and don't get me wrong it definitely will. However, I fear we have entered this phase of AI where the shortsightedness of human nature has skewed our views of what AI truly promises us. AI today seems to be built into every piece of software, and now every piece of hardware in new emerging trends, but what is the point? Today chatbots lurk in every search bar, everyone wants to automate their lives away and for what? AI was meant to allow people to work less, but as AI gets better, it seems humans are just working 10x more and expected to output 100 fold. Everyone is suddenly an AI expert on LinkedIn but these same people barely understand how AI works, what it should and shouldn't be used for.\n\nAll this to say that AI itself has appeared to have lost its magic too, at least temporarily. We generate AI slop, fill the internet with bots, prop our stock market on the promise of what AI might one day be, all while abusing what AI truly should be.\n\nSo where did the magic go? I don't have the answer. Maybe it's buried under the noise, maybe we stopped looking for it, or maybe we just got too comfortable to care. All I know is that somewhere between the first time I picked up a controller and now, something changed. And I don't think it was the technology. I think it was us.\n\n- Mikey",
     },
 ]
