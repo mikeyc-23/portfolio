@@ -42,7 +42,10 @@
       "Bash(git commit:*)",
       "Bash(npx tsc:*)",
       "Bash(npx vite:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(bash \"C:\\\\Users\\\\micha\\\\.claude\\\\plugins\\\\cache\\\\claude-plugins-official\\\\superpowers\\\\5.0.6\\\\scripts\\\\start-server.sh\" --project-dir \"c:\\\\Users\\\\micha\\\\Desktop\\\\portfolio\")",
+      "Bash(sort -t- -k2 -n)",
+      "Bash(npm run:*)"
     ]
   }
 }
