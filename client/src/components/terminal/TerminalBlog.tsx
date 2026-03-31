@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import Markdown from 'react-markdown'
 import { blogPosts } from '../../data/content'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
 import BlogEmblem from './BlogEmblem'
@@ -7,11 +8,9 @@ function TerminalBlog() {
     const ref = useScrollReveal()
     const [activePost, setActivePost] = useState<string | null>(null)
     const [search, setSearch] = useState('')
-    const [fullscreen, setFullscreen] = useState(false)
 
     const closeModal = useCallback(() => {
         setActivePost(null)
-        setFullscreen(false)
     }, [])
 
     // close modal on Escape key
@@ -83,22 +82,27 @@ function TerminalBlog() {
             {selectedPost && (
                 <div className="t-blog__modal-overlay" onClick={closeModal}>
                     <div
-                        className={`t-blog__modal${fullscreen ? ' t-blog__modal--fullscreen' : ''}`}
+                        className="t-blog__modal"
                         onClick={e => e.stopPropagation()}
                     >
+                        {(selectedPost as any).video && (
+                            <>
+                                <video
+                                    className="t-blog__modal-video"
+                                    src={(selectedPost as any).video}
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                />
+                                <div className="t-blog__modal-scanlines" />
+                            </>
+                        )}
                         <div className="t-blog__modal-header">
                             <span className="t-blog__modal-date">{selectedPost.date}</span>
-                            <div className="t-blog__modal-actions">
-                                <button
-                                    className="t-blog__modal-fullscreen"
-                                    onClick={() => setFullscreen(prev => !prev)}
-                                >
-                                    {fullscreen ? '[_] exit' : '[■] fullscreen'}
-                                </button>
-                                <button className="t-blog__modal-close" onClick={closeModal}>
-                                    [x] close
-                                </button>
-                            </div>
+                            <button className="t-blog__modal-close" onClick={closeModal}>
+                                [x] close
+                            </button>
                         </div>
                         <h3 className="t-blog__modal-title">{selectedPost.title}</h3>
                         <div className="t-blog__modal-tags">
@@ -107,9 +111,7 @@ function TerminalBlog() {
                             ))}
                         </div>
                         <div className="t-blog__modal-body">
-                            {selectedPost.body.split('\n\n').map((paragraph, i) => (
-                                <p key={i}>{paragraph}</p>
-                            ))}
+                            <Markdown>{selectedPost.body}</Markdown>
                         </div>
                     </div>
                 </div>
