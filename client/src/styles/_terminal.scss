@@ -687,33 +687,51 @@
     padding: 2rem;
 }
 
-// blog modal — slides in from the right like opening a file
+// blog modal — fullscreen centered overlay
 .t-blog__modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
     z-index: 1000;
-    display: flex;
-    justify-content: flex-end;
+    overflow-y: auto;
     animation: blog-overlay-in 0.3s ease;
 }
 
 .t-blog__modal {
-    width: min(600px, 90vw);
-    height: 100%;
+    width: 100%;
+    min-height: 100vh;
     background: $bg-dark;
-    border-left: 1px solid $green-dim;
-    padding: 2rem;
-    overflow-y: auto;
-    animation: blog-slide-in 0.3s ease;
+    padding: 3rem 4rem;
+    animation: blog-fade-in 0.3s ease;
     font-family: $font-mono;
-    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
 
-    &--fullscreen {
-        width: 100vw;
-        border-left: none;
-        padding: 2rem 4rem;
-    }
+// background video — loops behind blog post text
+.t-blog__modal-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.45) saturate(0.7) sepia(0.15) hue-rotate(70deg);
+    z-index: 0;
+    pointer-events: none;
+}
+
+// CRT scanlines over video
+.t-blog__modal-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.12) 2px,
+        rgba(0, 0, 0, 0.12) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
 }
 
 .t-blog__modal-header {
@@ -723,6 +741,8 @@
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid $green-dim;
+    position: relative;
+    z-index: 2;
 }
 
 .t-blog__modal-date {
@@ -735,8 +755,7 @@
     gap: 0.5rem;
 }
 
-.t-blog__modal-close,
-.t-blog__modal-fullscreen {
+.t-blog__modal-close {
     font-family: $font-mono;
     font-size: 0.8rem;
     color: $green-mid;
@@ -761,9 +780,11 @@
 .t-blog__modal-title {
     font-size: 1.3rem;
     color: $green-primary;
-    text-shadow: 0 0 8px rgba($green-primary, 0.4);
+    text-shadow: 0 0 12px rgba($green-primary, 0.5), 0 0 20px rgba(0, 0, 0, 0.8);
     margin-bottom: 0.75rem;
     animation: blog-content-in 0.4s ease 0.15s both;
+    position: relative;
+    z-index: 2;
 }
 
 .t-blog__modal-tags {
@@ -771,6 +792,8 @@
     gap: 0.5rem;
     margin-bottom: 1.5rem;
     animation: blog-content-in 0.4s ease 0.25s both;
+    position: relative;
+    z-index: 2;
 }
 
 .t-blog__modal-body {
@@ -779,6 +802,9 @@
     line-height: 1.8;
     padding-bottom: 2rem;
     animation: blog-content-in 0.4s ease 0.35s both;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 
     p {
         margin-bottom: 1.25rem;
@@ -790,9 +816,9 @@
     to   { opacity: 1; }
 }
 
-@keyframes blog-slide-in {
-    from { transform: translateX(100%); }
-    to   { transform: translateX(0); }
+@keyframes blog-fade-in {
+    from { opacity: 0; transform: scale(0.98); }
+    to   { opacity: 1; transform: scale(1); }
 }
 
 @keyframes blog-content-in {
@@ -1115,11 +1141,6 @@
     .t-skills__tag {
         font-size: 0.75rem;
         padding: 0.4rem 0.8rem;
-    }
-
-    // blog: fullscreen modal uses full padding on mobile
-    .t-blog__modal--fullscreen {
-        padding: 1.5rem;
     }
 
     .t-blog__card {

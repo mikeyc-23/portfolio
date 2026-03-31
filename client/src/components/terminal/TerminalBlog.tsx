@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import Markdown from 'react-markdown'
 import { blogPosts } from '../../data/content'
 import { useScrollReveal } from '../../hooks/useScrollReveal'
@@ -79,17 +80,17 @@ function TerminalBlog() {
                 )}
             </div>
 
-            {selectedPost && (
+            {selectedPost && createPortal(
                 <div className="t-blog__modal-overlay" onClick={closeModal}>
                     <div
                         className="t-blog__modal"
                         onClick={e => e.stopPropagation()}
                     >
-                        {(selectedPost as any).video && (
+                        {selectedPost.video && (
                             <>
                                 <video
                                     className="t-blog__modal-video"
-                                    src={(selectedPost as any).video}
+                                    src={selectedPost.video}
                                     autoPlay
                                     loop
                                     muted
@@ -114,7 +115,8 @@ function TerminalBlog() {
                             <Markdown>{selectedPost.body}</Markdown>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </section>
     )
